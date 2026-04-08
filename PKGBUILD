@@ -36,8 +36,10 @@ _url="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git"
 source=(
   config
   0001-hdmi_frl.patch
+  0002-bore.patch
 )
 b2sums=(
+  'SKIP'
   'SKIP'
   'SKIP'
 )
