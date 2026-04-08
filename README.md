@@ -6,6 +6,7 @@ This is my custom linux kernel config and patches, mainly used on my personal ga
 - Patches
   - HDMI FRL (for 4k@144hz, HDMI 2.1 support)
   - BORE (Burst-Oriented Response Enhancer) scheduler
+  - LLVM Polly (polyhedral loop optimizer for better cache locality and parallelism)
 - `PREEMPT_FULL`
 - `NO_HZ_FULL`
 - `sched_ext`

@@ -20,6 +20,7 @@ makedepends=(
   lld
   pahole
   perl
+  polly
   python
   rust
   rust-bindgen
@@ -37,8 +38,10 @@ source=(
   config
   0001-hdmi_frl.patch
   0002-bore.patch
+  0003-clang-polly.patch
 )
 b2sums=(
+  'SKIP'
   'SKIP'
   'SKIP'
   'SKIP'
