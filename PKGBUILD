@@ -39,8 +39,10 @@ source=(
   0001-hdmi_frl.patch
   0002-bore.patch
   0003-clang-polly.patch
+  0004-mm_lazy_rss_stat.patch
 )
 b2sums=(
+  'SKIP'
   'SKIP'
   'SKIP'
   'SKIP'
@@ -66,7 +68,7 @@ prepare() {
   local patch_hash
   patch_hash=$(cat "${source[@]/#/..\/}" 2>/dev/null | b2sum | cut -d' ' -f1) || patch_hash=""
 
-  if [[ ! -f "$patch_stamp" ]] || [[ "$(cat "$patch_stamp")" != "$patch_hash" ]]; then
+  if [[ ! -f "$patch_stamp" ]] || [[ "$(cat "$patch_stamp")" != "$patch_hash" ]] || git diff --quiet HEAD; then
     echo "Patches changed, resetting tree..."
     git reset --hard HEAD
     git clean -fdx
