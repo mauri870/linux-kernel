@@ -18,6 +18,8 @@ This is my custom linux kernel config and patches, mainly used on my personal ga
 
 ## Build & Install
 
+Compiling the kernel takes around 15-20min on a 9950X3D with the default `-j$(nproc)`.
+
 ```sh
 makepkg -si -f
 ```
