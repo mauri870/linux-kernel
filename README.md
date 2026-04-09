@@ -16,19 +16,11 @@ This is my custom linux kernel config and patches, mainly used on my personal ga
 - 1000 Hz tick rate
 - Clang 22 + ThinLTO + `-O3` + `-march=native`
 
-## Misc
-
-For my 9950X3D, system tasks are restricted to CCD1 (cores 8-15), leaving CCD0 (cores 0-7, 3D V-Cache) clean for gaming:
-
-```
-GRUB_CMDLINE_LINUX_DEFAULT="isolcpus=domain,nohz,managed_irq,8-15,24-31 nohz_full=0-31 rcu_nocbs=0-31 kthread_cpus=8-15,24-31 irqaffinity=8-15,24-31"
-```
-
 ## Build & Install
 
 Compiling the kernel takes around 15-20min on a 9950X3D with the default `-j$(nproc)`.
 
 ```sh
-taskset -c 0-31 makepkg -si -f
+makepkg -si -f
 ```
 
