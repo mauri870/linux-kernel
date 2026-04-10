@@ -40,8 +40,10 @@ source=(
   0002-bore.patch
   0003-clang-polly.patch
   0004-mm_lazy_rss_stat.patch
+  0005-cflags-O3.patch
 )
 b2sums=(
+  'SKIP'
   'SKIP'
   'SKIP'
   'SKIP'
@@ -103,7 +105,7 @@ prepare() {
 
 build() {
   cd $_srcname
-  make LLVM=1 V=1 KCFLAGS='-pipe -O3' -j$(nproc) all
+  make LLVM=1 V=1 -j$(nproc) all
   make LLVM=1 V=1 -j$(nproc) -C tools/bpf/bpftool vmlinux.h feature-clang-bpf-co-re=1
 }
 

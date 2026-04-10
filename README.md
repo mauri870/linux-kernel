@@ -8,13 +8,14 @@ This is my custom linux kernel config and patches, mainly used on my personal ga
   - [BORE (Burst-Oriented Response Enhancer) scheduler](https://github.com/firelzrd/bore-scheduler)
   - [LLVM Polly (polyhedral loop optimizer for better cache locality and parallelism)](https://github.com/CachyOS/kernel-patches/blob/master/7.0/misc/0001-clang-polly.patch)
   - [Lazy RSS stat percpu counters (faster fork/exec for single-threaded tasks)](https://lore.kernel.org/lkml/20251127233635.4170047-2-krisman@suse.de/)
+  - CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE uses -O3
 - `PREEMPT_FULL`
 - `NO_HZ_IDLE`
 - `sched_ext`
 - `TRANSPARENT_HUGEPAGE_ALWAYS`
 - `NTSYNC`
 - 1000 Hz tick rate
-- Clang 22 + ThinLTO + `-O3` + `-march=native`
+- LLVM/Clang 22 + ThinLTO + `-march=native`
 
 ## Build & Install
 
