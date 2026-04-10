@@ -14,6 +14,7 @@ This is my custom linux kernel config and patches, mainly used on my personal ga
 - `sched_ext`
 - `TRANSPARENT_HUGEPAGE_ALWAYS`
 - `NTSYNC`
+- Google's BBR for TCP congestion control
 - 1000 Hz tick rate
 - LLVM/Clang 22 + ThinLTO + `-march=native`
 
