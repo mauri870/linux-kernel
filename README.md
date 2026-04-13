@@ -10,7 +10,7 @@ This is my custom linux kernel config and patches, mainly used on my personal ga
   - [Lazy RSS stat percpu counters (faster fork/exec for single-threaded tasks)](https://lore.kernel.org/lkml/20251127233635.4170047-2-krisman@suse.de/)
   - CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE uses -O3
 - `PREEMPT_FULL`
-- `NO_HZ_IDLE`
+- `NO_HZ_FULL` for tickless
 - `sched_ext`
 - `TRANSPARENT_HUGEPAGE_ALWAYS`
 - `NTSYNC`
@@ -24,5 +24,14 @@ Compiling the kernel takes around 15-20min on a 9950X3D with the default `-j$(np
 
 ```sh
 makepkg -si -f
+```
+
+## Kernel Boot Args
+
+Set the X3D cores to be tickless:
+
+```bash
+# cpu 0 can't be nohz_full
+nohz_full=1-7,16-23 rcu_nocbs=1-7,16-23 irqaffinity=8-15,24-31
 ```
 
