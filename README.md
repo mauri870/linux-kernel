@@ -28,10 +28,10 @@ makepkg -si -f
 
 ## Kernel Boot Args
 
-Set the X3D cores to be tickless:
+Set the X3D cores to be tickless, and offload RCUs and IRQs to CCD1:
 
 ```bash
-# cpu 0 can't be nohz_full
+# cpu 0 can't be tickless
 nohz_full=1-7,16-23 rcu_nocbs=1-7,16-23 irqaffinity=8-15,24-31
 ```
 
