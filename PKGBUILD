@@ -51,20 +51,23 @@ b2sums=(
   'SKIP'
 )
 
+export LINUX_COMMIT=028ef9c96e96197026887c0f092424679298aae8
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
 
 prepare() {
   if [[ ! -d "$_srcname/.git" ]]; then
-    echo "Cloning linux master (shallow)..."
+    echo "Cloning linux repository..."
     rm -rf "$_srcname"
-    git clone --depth=1 "$_url" "$_srcname"
-  else
-    echo "Using existing clone in $_srcname"
+    git clone --filter=blob:none "$_url" "$_srcname"
   fi
 
-  cd $_srcname
+  cd "$_srcname"
+
+  echo "Enforcing commit $LINUX_COMMIT..."
+  git fetch origin
+  git checkout -f "$LINUX_COMMIT"
 
   local patch_stamp=".patch-stamp"
   local patch_hash
@@ -72,6 +75,7 @@ prepare() {
 
   if [[ ! -f "$patch_stamp" ]] || [[ "$(cat "$patch_stamp")" != "$patch_hash" ]] || git diff --quiet HEAD; then
     echo "Patches changed, resetting tree..."
+    git checkout "$LINUX_COMMIT"
     git reset --hard HEAD
     git clean -fdx
 
@@ -95,7 +99,6 @@ prepare() {
 
   echo "Setting config..."
   cp ../config .config
-  ./scripts/config --disable LTO_NONE --disable LTO_CLANG_FULL --enable LTO_CLANG_THIN
   make LLVM=1 olddefconfig
   diff -u ../config .config || :
 
