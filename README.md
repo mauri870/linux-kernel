@@ -28,7 +28,7 @@ makepkg -si -f
 
 ## Kernel Boot Args
 
-Set the X3D cores to be tickless, and offload RCUs and IRQs to CCD1:
+For dual-CCD asymmetric CPUs such as 9950X3D, configure the X3D cores to run tickless and offload RCU callbacks and IRQs to CCD1:
 
 ```bash
 # cpu 0 can't be tickless
