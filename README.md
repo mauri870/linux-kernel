@@ -10,12 +10,12 @@ This is my custom linux kernel config and patches, mainly used on my personal ga
   - [Lazy RSS stat percpu counters (faster fork/exec for single-threaded tasks)](https://lore.kernel.org/lkml/20251127233635.4170047-2-krisman@suse.de/)
   - CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE uses -O3
   - Disable Split Lock mitigation
+  - [Google's BBR3 for TCP congestion control](https://github.com/google/bbr/tree/v3)
 - `PREEMPT_FULL`
 - `NO_HZ_FULL` for tickless
 - `sched_ext`
 - `TRANSPARENT_HUGEPAGE_ALWAYS`
 - `NTSYNC`
-- Google's BBR for TCP congestion control
 - 1000 Hz tick rate
 - LLVM/Clang 22 + ThinLTO + `-march=native`
 
