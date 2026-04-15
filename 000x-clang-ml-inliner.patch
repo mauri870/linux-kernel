@@ -1,0 +1,63 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mauri de Souza Meneguzzo <mauri870@gmail.com>
+Date: Thu, 10 Apr 2026 00:00:00 +0000
+Subject: [PATCH] kbuild: Add support for Clang ML-guided inliner and register
+ allocator
+
+Enable LLVM's machine-learning-based inliner and register allocation
+advisor when building with Clang. These models use offline-trained ML
+models to make better inlining and register allocation decisions than
+the heuristic-based defaults.
+
+The flags require a Clang/LLVM toolchain compiled with ML support
+(i.e. LLVM built with the MLGO release models embedded). Use
+-enable-ml-inliner=release and -regalloc-enable-advisor=release to
+activate the release-mode models.
+
+Signed-off-by: Mauri de Souza Meneguzzo <mauri870@gmail.com>
+---
+ Makefile     |  5 +++++
+ init/Kconfig | 13 +++++++++++++
+ 2 files changed, 18 insertions(+)
+
+diff --git a/Makefile b/Makefile
+index e8737f5ea..000000001 100644
+--- a/Makefile
++++ b/Makefile
+@@ -886,5 +886,10 @@ ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
+ KBUILD_CFLAGS	+= -mllvm -polly-run-dce
+ endif
+ endif
+
++ifdef CONFIG_CLANG_ML_INLINER
++KBUILD_CFLAGS	+= -mllvm -enable-ml-inliner=release \
++		   -mllvm -regalloc-enable-advisor=release
++endif
++
+ # Tell gcc to never replace conditional load with a non-conditional one
+diff --git a/init/Kconfig b/init/Kconfig
+index 66adb2fc9..000000002 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -263,6 +263,19 @@ config POLLY_CLANG
+
+ 	    https://polly.llvm.org
+
++config CLANG_ML_INLINER
++	bool "Use Clang ML-guided inliner and register allocator"
++	depends on CC_IS_CLANG && $(cc-option,-mllvm -enable-ml-inliner=release)
++	depends on !COMPILE_TEST
++	help
++	  This option enables Clang's machine-learning-guided inliner and
++	  register allocation advisor. Both use offline-trained MLGO models
++	  to make better decisions than the default heuristics, at no extra
++	  runtime cost. This requires a Clang toolchain compiled with the
++	  MLGO release models embedded (LLVM built with
++	  LLVM_INLINER_MODEL_PATH and LLVM_REGALLOC_MODEL_PATH pointing to
++	  the release model archives).
++
+ config HAVE_KERNEL_GZIP
+ 	bool
+
+--
+2.47.1
