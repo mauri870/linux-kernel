@@ -15354,8 +15354,7 @@ Subject: [PATCH 083/109] .github/workflows/genpatch.yml: Add workflow
 
 ---
  .github/workflows/genpatch.yml | 22 ++++++++++++++++++++++
- .gitignore                     |  2 +-
- 2 files changed, 23 insertions(+), 1 deletion(-)
+ 1 file changed, 22 insertions(+)
  create mode 100644 .github/workflows/genpatch.yml
 
 diff --git a/.github/workflows/genpatch.yml b/.github/workflows/genpatch.yml
@@ -15386,19 +15385,7 @@ index 0000000000000..75731cf60b2e9
 +          name: "Patch"
 +          path: 0001-amdgpu-frl.patch
 +          retention-days: 30
-diff --git a/.gitignore b/.gitignore
-index 3a7241c941f5e..d5dbc2628e85a 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -10,7 +10,7 @@
- #
- # Normal rules (sorted alphabetically)
- #
--.*
-+.
- *.a
- *.asn1.[ch]
- *.bin
+
 -- 
 2.53.0
 
