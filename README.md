@@ -9,6 +9,7 @@ This is my custom linux kernel config and patches, mainly used on my personal ga
   - [LLVM Polly (polyhedral loop optimizer for better cache locality and parallelism)](https://github.com/CachyOS/kernel-patches/blob/master/7.0/misc/0001-clang-polly.patch)
   - [Lazy RSS stat percpu counters (faster fork/exec for single-threaded tasks)](https://lore.kernel.org/lkml/20251127233635.4170047-2-krisman@suse.de/)
   - CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE uses -O3
+  - Disable Split Lock mitigation
 - `PREEMPT_FULL`
 - `NO_HZ_FULL` for tickless
 - `sched_ext`

@@ -41,8 +41,10 @@ source=(
   0003-clang-polly.patch
   0004-mm_lazy_rss_stat.patch
   0005-cflags-O3.patch
+  0006-disable-split-lock.patch
 )
 b2sums=(
+  'SKIP'
   'SKIP'
   'SKIP'
   'SKIP'
