@@ -2,7 +2,7 @@
 
 This is my custom linux kernel config and patches, mainly used on my personal gaming machine.
 
-- Bleeding edge Linux (Torvalds mainline tree)
+- Linux v7.0
 - Patches
   - [HDMI FRL (for 4k@144hz, HDMI 2.1 support for AMD GPUs)](https://github.com/mkopec/linux/tree/hdmi_frl)
   - [BORE (Burst-Oriented Response Enhancer) scheduler](https://github.com/firelzrd/bore-scheduler)
