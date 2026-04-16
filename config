@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/x86 7.0.0-rc7 Kernel Configuration
+# Linux/x86 7.0.0 Kernel Configuration
 #
 CONFIG_CC_VERSION_TEXT="clang version 22.1.3"
 CONFIG_GCC_VERSION=0
@@ -7512,7 +7512,6 @@ CONFIG_TRACE_GPU_MEM=y
 
 CONFIG_DRM_ACCEL=y
 CONFIG_DRM_ACCEL_AMDXDNA=m
-CONFIG_DRM_ACCEL_ARM_ETHOSU=m
 CONFIG_DRM_ACCEL_HABANALABS=m
 CONFIG_HL_HLDIO=y
 CONFIG_DRM_ACCEL_IVPU=m
