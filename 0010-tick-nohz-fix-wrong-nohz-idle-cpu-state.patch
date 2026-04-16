@@ -1,0 +1,46 @@
+From 20260203000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Shubhang Kaushik <shubhang@os.amperecomputing.com>
+Date: Tue, 03 Feb 2026 16:49:03 -0800
+Subject: [PATCH] tick/nohz: Fix wrong NOHZ idle CPU state
+
+Under CONFIG_NO_HZ_FULL, the scheduler tick can get stopped earlier via
+tick_nohz_full_stop_tick() before the CPU subsequently enters the idle
+path. In this case, tick_nohz_idle_stop_tick() observes TS_FLAG_STOPPED
+already set and skips nohz_balance_enter_idle() because the !was_stopped
+condition assumes tick-stop and idle-entry are coupled.
+This leaves a tickless idle CPU absent from nohz.idle_cpus_mask, making
+it invisible to NOHZ idle load balancing while periodic balancing is
+also suppressed.
+
+The patch fixes this by decoupling tick-stop transition accounting from
+scheduler bookkeeping. idle_jiffies remains updated only on the
+tick-stop transition, while nohz_balance_enter_idle() is invoked
+whenever a CPU enters idle with the tick already stopped, relying on its
+existing idempotent guard to avoid duplicate registration.
+
+Signed-off-by: Shubhang Kaushik <shubhang@os.amperecomputing.com>
+Signed-off-by: Adam Li <adamli@os.amperecomputing.com>
+Reviewed-by: Christoph Lameter (Ampere) <cl@gentwo.org>
+Link: https://lore.kernel.org/lkml/20260203-fix-nohz-idle-v1-1-ad05a5872080@os.amperecomputing.com/
+---
+ kernel/time/tick-sched.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index d1f27df1e60e..000000000000 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -1259,8 +1259,9 @@ void tick_nohz_idle_stop_tick(void)
+ 		ts->idle_sleeps++;
+ 		ts->idle_expires = expires;
+
+-		if (!was_stopped && tick_sched_flag_test(ts, TS_FLAG_STOPPED)) {
+-			ts->idle_jiffies = ts->last_jiffies;
++		if (tick_sched_flag_test(ts, TS_FLAG_STOPPED)) {
++			if (!was_stopped)
++				ts->idle_jiffies = ts->last_jiffies;
+ 			nohz_balance_enter_idle(cpu);
+ 		}
+ 	} else {
+--
+2.49.0

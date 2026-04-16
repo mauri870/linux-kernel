@@ -43,8 +43,14 @@ source=(
   0005-cflags-O3.patch
   0006-disable-split-lock.patch
   0007-tcp-bbr3.patch
+  0008-revert-tick-nohz-check_tick_dependency.patch
+  0009-revert-clockevents-prevent-timer-interrupt-starvation.patch
+  0010-tick-nohz-fix-wrong-nohz-idle-cpu-state.patch
 )
 b2sums=(
+  'SKIP'
+  'SKIP'
+  'SKIP'
   'SKIP'
   'SKIP'
   'SKIP'

@@ -1,0 +1,35 @@
+From 82b915051d32a68ea3bbe261c93f5620699ff047 Mon Sep 17 00:00:00 2001
+From: Mauri de Souza Meneguzzo <mauri870@gmail.com>
+Date: Thu, 16 Apr 2026 00:00:00 -0300
+Subject: [PATCH] Revert "tick/nohz: Fix inverted return value in
+ check_tick_dependency() fast path"
+
+This reverts commit 82b915051d32a68ea3bbe261c93f5620699ff047.
+
+With nohz_full enabled, the corrected return value causes the tick to
+actually stop on isolated CPUs. This breaks GPU command submission and
+display pipeline scheduling at login, resulting in a visual freeze.
+
+Under rc7 the inverted return value kept the tick running on nohz_full
+CPUs unconditionally, which masked the underlying scheduling issue.
+Revert until the root cause is diagnosed.
+
+---
+ kernel/time/tick-sched.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index d1f27df1e60e..f7907fadd63f 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -345,7 +345,7 @@ static bool check_tick_dependency(atomic_t *dep)
+ 	int val = atomic_read(dep);
+
+ 	if (likely(!tracepoint_enabled(tick_stop)))
+-		return !!val;
++		return !val;
+
+ 	if (val & TICK_DEP_MASK_POSIX_TIMER) {
+ 		trace_tick_stop(0, TICK_DEP_MASK_POSIX_TIMER);
+--
+2.49.0
