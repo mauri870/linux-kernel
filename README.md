@@ -11,6 +11,17 @@ This is my custom linux kernel config and patches, mainly used on my personal ga
   - CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE uses -O3
   - Disable Split Lock mitigation
   - [Google's BBR3 for TCP congestion control](https://github.com/google/bbr/tree/v3)
+  - [tick/nohz: Fix wrong NOHZ idle CPU state](https://lore.kernel.org/lkml/20260203-fix-nohz-idle-v1-1-ad05a5872080@os.amperecomputing.com/)
+  - drivers/iommu: enable posted MSI by default (lower PCIe interrupt latency for GPU)
+  - sched: more aggressive idle load balancing (halved avg_idle threshold)
+  - vm: raise default max_map_count to INT_MAX (prevents game crashes from VMA exhaustion)
+  - net: increase default socket buffer size by 4x
+  - sched: rate-limit `sched_yield` to once per jiffy (fixes Proton/Wine games that spam yield)
+  - fs: place shared libraries below PIE binary in address space (better code/library cache locality)
+  - kernel: use `mmput_async` on process exit (avoids blocking mm teardown under memory pressure)
+  - Reverts for desktop freeze with nohz_full:
+    - time: revert `check_tick_dependency()` inverted return value
+    - time: revert `clockevents: Prevent timer interrupt starvation`
 - `PREEMPT_FULL`
 - `NO_HZ_FULL` for tickless
 - `sched_ext`

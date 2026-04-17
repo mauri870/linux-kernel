@@ -46,8 +46,22 @@ source=(
   0008-revert-tick-nohz-check_tick_dependency.patch
   0009-revert-clockevents-prevent-timer-interrupt-starvation.patch
   0010-tick-nohz-fix-wrong-nohz-idle-cpu-state.patch
+  0011-posted-msi-enable-by-default.patch
+  0012-sched-better-idle-balance.patch
+  0013-mm-max-map-count-INT-MAX.patch
+  0014-net-sock-SK_MEM_PACKETS-1024.patch
+  0015-sched-ratelimit-yield.patch
+  0016-mm-libs-grow-down.patch
+  0017-mm-mmput-async.patch
 )
 b2sums=(
+  'SKIP'
+  'SKIP'
+  'SKIP'
+  'SKIP'
+  'SKIP'
+  'SKIP'
+  'SKIP'
   'SKIP'
   'SKIP'
   'SKIP'
