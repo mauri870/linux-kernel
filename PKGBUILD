@@ -93,7 +93,7 @@ prepare() {
     for src in "${source[@]}"; do
       src="${src%%::*}"
       src="${src##*/}"
-      [[ $src = 000*.patch ]] || continue
+      [[ $src = 0[0-9]*.patch ]] || continue
       echo "Applying patch $src..."
       git apply "../$src"
     done
