@@ -26,7 +26,7 @@ This is my custom linux kernel config and patches, mainly used on my personal ga
 - `PREEMPT_FULL`
 - `NO_HZ_FULL` for tickless
 - `sched_ext`
-- `TRANSPARENT_HUGEPAGE_ALWAYS`
+- `TRANSPARENT_HUGEPAGE_MADVISE`
 - `NTSYNC`
 - 1000 Hz tick rate
 - LLVM/Clang 22 + ThinLTO + `-march=native`
