@@ -53,8 +53,10 @@ source=(
   0015-sched-ratelimit-yield.patch
   0016-mm-libs-grow-down.patch
   0017-mm-mmput-async.patch
+  0018-cgroup-vram.patch
 )
 b2sums=(
+  'SKIP'
   'SKIP'
   'SKIP'
   'SKIP'

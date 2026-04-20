@@ -12,6 +12,7 @@ This is my custom linux kernel config and patches, mainly used on my personal ga
   - Disable Split Lock mitigation
   - [Google's BBR3 for TCP congestion control](https://github.com/google/bbr/tree/v3)
   - [tick/nohz: Fix wrong NOHZ idle CPU state](https://lore.kernel.org/lkml/20260203-fix-nohz-idle-v1-1-ad05a5872080@os.amperecomputing.com/)
+  - [drm/ttm: keep protected workloads in VRAM when GPU memory runs low](https://pixelcluster.github.io/VRAM-Mgmt-fixed/)
   - drivers/iommu: enable posted MSI by default (lower PCIe interrupt latency for GPU)
   - sched: more aggressive idle load balancing (halved avg_idle threshold)
   - vm: raise default max_map_count to INT_MAX (prevents game crashes from VMA exhaustion)
