@@ -42,9 +42,10 @@ makepkg -si -f
 
 ## Kernel Boot Args
 
-For dual-CCD asymmetric CPUs such as 9950X3D, configure the X3D cores to run tickless and offload RCU callbacks and IRQs to CCD1:
+For dual-CCD asymmetric CPUs such as 9950X3D/9900X3D, configure the [kernel boot args](https://wiki.archlinux.org/title/Kernel_parameters) so X3D cores run tickless and offload RCU callbacks and IRQs to CCD1:
 
 ```bash
+C=$(nproc); Q=$((C/4)); H=$((C/2)); echo "nohz_full=1-$((Q-1)),${H}-$((H+Q-1)) rcu_nocbs=1-$((Q-1)),${H}-$((H+Q-1)) irqaffinity=${Q}-$((H-1)),$((H+Q))-$((C-1))"
 # cpu 0 can't be tickless
 nohz_full=1-7,16-23 rcu_nocbs=1-7,16-23 irqaffinity=8-15,24-31
 ```
