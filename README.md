@@ -47,3 +47,5 @@ C=$(nproc); Q=$((C/4)); H=$((C/2)); echo "nohz_full=1-$((Q-1)),${H}-$((H+Q-1)) r
 nohz_full=1-7,16-23 rcu_nocbs=1-7,16-23 irqaffinity=8-15,24-31
 ```
 
+For a 9950X3D2 I advise to set CCD1 cores as nohz_full and move system tasks to CCD0. Since cpu0 is the BSP it cannot be made tickless, so you might as well isolate CCD1 for gaming instead.
+
