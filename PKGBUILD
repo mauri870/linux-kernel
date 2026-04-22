@@ -43,20 +43,18 @@ source=(
   0005-cflags-O3.patch
   0006-disable-split-lock.patch
   0007-tcp-bbr3.patch
-  0008-revert-tick-nohz-check_tick_dependency.patch
-  0009-revert-clockevents-prevent-timer-interrupt-starvation.patch
-  0010-tick-nohz-fix-wrong-nohz-idle-cpu-state.patch
-  0011-posted-msi-enable-by-default.patch
-  0012-sched-better-idle-balance.patch
-  0013-mm-max-map-count-INT-MAX.patch
-  0014-net-sock-SK_MEM_PACKETS-1024.patch
-  0015-sched-ratelimit-yield.patch
-  0016-mm-libs-grow-down.patch
-  0017-mm-mmput-async.patch
-  0018-cgroup-vram.patch
+  0008-clockevents-add-missing-resets.patch
+  0009-tick-nohz-fix-wrong-nohz-idle-cpu-state.patch
+  0010-posted-msi-enable-by-default.patch
+  0011-sched-better-idle-balance.patch
+  0012-mm-max-map-count-INT-MAX.patch
+  0013-net-sock-SK_MEM_PACKETS-1024.patch
+  0014-sched-ratelimit-yield.patch
+  0015-mm-libs-grow-down.patch
+  0016-mm-mmput-async.patch
+  0017-cgroup-vram.patch
 )
 b2sums=(
-  'SKIP'
   'SKIP'
   'SKIP'
   'SKIP'
