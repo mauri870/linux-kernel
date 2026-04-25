@@ -140,8 +140,10 @@ _package() {
   pkgdesc="The $pkgdesc kernel and modules"
   depends=(
     coreutils
+    dmemcg-booster # for cgroup-vram.patch
     initramfs
     kmod
+    plasma-foreground-booster # for cgroup-vram.patch
   )
   optdepends=(
     'linux-firmware: firmware images needed for some devices'
