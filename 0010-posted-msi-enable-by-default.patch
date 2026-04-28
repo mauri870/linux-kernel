@@ -1,6 +1,17 @@
---- linux-6.12.1/drivers/iommu/irq_remapping.c~	2024-11-22 14:30:26.000000000 +0000
-+++ linux-6.12.1/drivers/iommu/irq_remapping.c	2025-03-12 17:17:13.684425681 +0000
-@@ -24,7 +24,7 @@
+From 21e110f3d40ff0131fd3d91cdf7c3020aaa12305 Mon Sep 17 00:00:00 2001
+From: Mauri de Souza Meneguzzo <mauri870@gmail.com>
+Date: Tue, 28 Apr 2026 10:36:09 -0300
+Subject: [PATCH] Enable posted MSI by default
+
+---
+ drivers/iommu/irq_remapping.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/iommu/irq_remapping.c b/drivers/iommu/irq_remapping.c
+index c2443659812a..0e71a648f403 100644
+--- a/drivers/iommu/irq_remapping.c
++++ b/drivers/iommu/irq_remapping.c
+@@ -24,7 +24,7 @@ int no_x2apic_optout;
  
  int disable_irq_post = 0;
  
@@ -9,3 +20,6 @@
  
  static int disable_irq_remap;
  static struct irq_remap_ops *remap_ops;
+-- 
+2.54.0
+
