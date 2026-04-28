@@ -1,22 +1,17 @@
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From 75e7f9b2fb8d5538aa4c109aae82a0755fe3934d Mon Sep 17 00:00:00 2001
 From: Mauri de Souza Meneguzzo <mauri870@gmail.com>
-Date: Thu, 10 Apr 2026 09:36:00 +0003
-Subject: [PATCH] Makefile: use -O3 and -pipe for performance builds
+Date: Tue, 28 Apr 2026 09:49:33 -0300
+Subject: [PATCH] Apply 0005-cflags-O3.patch
 
-Use -O3 instead of -O2 for CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE to
-enable more aggressive compiler optimizations. Also add -pipe to
-avoid temporary files during compilation.
-
-Signed-off-by: Mauri de Souza Meneguzzo <mauri870@gmail.com>
 ---
- Makefile | 4 ++--
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ Makefile | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 4f54c56856386..6954b7f44afb3 100644
+index b5a913f259b9..d6ec4f742e3f 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -594,6 +594,7 @@ KBUILD_CFLAGS += -funsigned-char
+@@ -593,6 +593,7 @@ KBUILD_CFLAGS += -funsigned-char
  KBUILD_CFLAGS += -fno-common
  KBUILD_CFLAGS += -fno-PIE
  KBUILD_CFLAGS += -fno-strict-aliasing
@@ -24,13 +19,17 @@ index 4f54c56856386..6954b7f44afb3 100644
  
  KBUILD_CPPFLAGS := -D__KERNEL__
  KBUILD_RUSTFLAGS := $(rust_common_flags) \
-@@ -891,7 +892,7 @@ endif # need-config
+@@ -890,8 +891,8 @@ endif # need-config
  KBUILD_CFLAGS	+= -fno-delete-null-pointer-checks
  
  ifdef CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE
 -KBUILD_CFLAGS += -O2
-+KBUILD_CFLAGS += -O3
 -KBUILD_RUSTFLAGS += -Copt-level=2
++KBUILD_CFLAGS += -O3
 +KBUILD_RUSTFLAGS += -Copt-level=3
  else ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
  KBUILD_CFLAGS += -Os
+ KBUILD_RUSTFLAGS += -Copt-level=s
+-- 
+2.54.0
+
