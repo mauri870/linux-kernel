@@ -1,6 +1,17 @@
---- linux-6.3.1/kernel/sched/fair.c~	2023-04-30 23:32:26.000000000 +0000
-+++ linux-6.3.1/kernel/sched/fair.c	2023-06-27 15:01:52.301844933 +0000
-@@ -11745,7 +11745,7 @@
+From 5221af0bb72620525ba10e1effea9f3b6819d4a8 Mon Sep 17 00:00:00 2001
+From: Mauri de Souza Meneguzzo <mauri870@gmail.com>
+Date: Tue, 28 Apr 2026 10:37:50 -0300
+Subject: [PATCH] Improve idle CPU load balancing
+
+---
+ kernel/sched/fair.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index e810385c9c96..7d80598c0c63 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -13017,7 +13017,7 @@ static int sched_balance_newidle(struct rq *this_rq, struct rq_flags *rf)
  
  		update_next_balance(sd, &next_balance);
  
@@ -9,3 +20,6 @@
  			break;
  
  		if (sd->flags & SD_BALANCE_NEWIDLE) {
+-- 
+2.54.0
+
