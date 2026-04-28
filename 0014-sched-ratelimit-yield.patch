@@ -1,4 +1,4 @@
-From 467904416b3786c9f2b29ca683d36cb2523ae7ce Mon Sep 17 00:00:00 2001
+From c81224432d1e8c96f48ca709a26e161df588706f Mon Sep 17 00:00:00 2001
 From: Colin Ian King <colin.i.king@intel.com>
 Date: Thu, 17 Oct 2024 16:29:50 +0100
 Subject: [PATCH] handle sched_yield gracefully when being hammered
@@ -14,10 +14,10 @@ Signed-off-by: Colin Ian King <colin.i.king@intel.com>
  1 file changed, 12 insertions(+)
 
 diff --git a/kernel/sched/syscalls.c b/kernel/sched/syscalls.c
-index ae1b42775ef9..441ac65f4f15 100644
+index 6f10db3646e7..0fe72be532f3 100644
 --- a/kernel/sched/syscalls.c
 +++ b/kernel/sched/syscalls.c
-@@ -1456,10 +1456,22 @@ SYSCALL_DEFINE3(sched_getaffinity, pid_t, pid, unsigned int, len,
+@@ -1296,10 +1296,22 @@ SYSCALL_DEFINE3(sched_getaffinity, pid_t, pid, unsigned int, len,
  	return ret;
  }
  
@@ -41,5 +41,5 @@ index ae1b42775ef9..441ac65f4f15 100644
  	rq = this_rq_lock_irq(&rf);
  
 -- 
-2.46.2
+2.54.0
 

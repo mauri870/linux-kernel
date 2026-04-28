@@ -1,9 +1,17 @@
-Place libraries right below the binary for PIE binaries, this helps code locality
-(and thus performance).
+From 58a7136b62ae2451060c23f0ef6ae9a43ffd6e45 Mon Sep 17 00:00:00 2001
+From: Mauri de Souza Meneguzzo <mauri870@gmail.com>
+Date: Tue, 28 Apr 2026 10:39:05 -0300
+Subject: [PATCH] Put shared libraries below PIE binaries in address space
 
---- linux-5.18.2/fs/binfmt_elf.c~	2022-06-06 06:49:00.000000000 +0000
-+++ linux-5.18.2/fs/binfmt_elf.c	2022-08-10 13:53:04.878633166 +0000
-@@ -1297,6 +1297,8 @@
+---
+ fs/binfmt_elf.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index 8e89cc5b2820..9d5dcd554a1d 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -1301,6 +1301,8 @@ static int load_elf_binary(struct linux_binprm *bprm)
  	mm = current->mm;
  	mm->end_code = end_code;
  	mm->start_code = start_code;
@@ -12,3 +20,6 @@ Place libraries right below the binary for PIE binaries, this helps code localit
  	mm->start_data = start_data;
  	mm->end_data = end_data;
  	mm->start_stack = bprm->p;
+-- 
+2.54.0
+

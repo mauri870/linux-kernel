@@ -1,9 +1,8 @@
-From d504eee0e80385cecce09b190a035fdcee7ef043 Mon Sep 17 00:00:00 2001
+From d2e71ce11453fdcd06d1c4119205b0fdf2f60a9d Mon Sep 17 00:00:00 2001
 From: Peter Jung <admin@ptr1337.dev>
 Date: Wed, 8 Apr 2026 19:07:32 +0200
 Subject: [PATCH] cgroup-vram
 
-Signed-off-by: Peter Jung <admin@ptr1337.dev>
 ---
  drivers/gpu/drm/ttm/ttm_bo.c       | 221 +++++++++++++++++++++++++----
  drivers/gpu/drm/ttm/ttm_resource.c |  48 +++++--
@@ -14,7 +13,7 @@ Signed-off-by: Peter Jung <admin@ptr1337.dev>
  6 files changed, 369 insertions(+), 43 deletions(-)
 
 diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
-index 0765d69423d2..73b19c5d06f7 100644
+index acb9197db879..df4f4633a3a5 100644
 --- a/drivers/gpu/drm/ttm/ttm_bo.c
 +++ b/drivers/gpu/drm/ttm/ttm_bo.c
 @@ -489,6 +489,117 @@ int ttm_bo_evict_first(struct ttm_device *bdev, struct ttm_resource_manager *man
@@ -588,4 +587,5 @@ index 9d95824dc6fa..29197d3801ac 100644
  {
  	struct dmem_cgroup_region *region;
 -- 
-2.53.0
+2.54.0
+

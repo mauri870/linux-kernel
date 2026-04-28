@@ -1,6 +1,18 @@
---- linux-6.0/kernel/exit.c~	2022-10-02 21:09:07.000000000 +0000
-+++ linux-6.0/kernel/exit.c	2022-11-18 17:25:22.445717556 +0000
-@@ -507,7 +507,7 @@
+From 85ad9f4e700829a5e89d08f9ba208672f3ee26ed Mon Sep 17 00:00:00 2001
+From: Mauri de Souza Meneguzzo <mauri870@gmail.com>
+Date: Tue, 28 Apr 2026 10:41:26 -0300
+Subject: [PATCH] use mmput_async on process exit
+
+---
+ kernel/exit.c | 2 +-
+ kernel/fork.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/exit.c b/kernel/exit.c
+index 292ed28203e7..3d797aaf71ed 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -582,7 +582,7 @@ static void exit_mm(void)
  	task_unlock(current);
  	mmap_read_unlock(mm);
  	mm_update_next_owner(mm);
@@ -9,9 +21,11 @@
  	if (test_thread_flag(TIF_MEMDIE))
  		exit_oom_victim();
  }
---- linux-6.0/kernel/fork.c~	2022-11-18 18:53:36.000000000 +0000
-+++ linux-6.0/kernel/fork.c	2022-11-18 19:01:44.058654439 +0000
-@@ -1222,7 +1222,7 @@
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 07e716e3b136..26c90c3a07af 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1210,7 +1210,7 @@ void mmput_async(struct mm_struct *mm)
  {
  	if (atomic_dec_and_test(&mm->mm_users)) {
  		INIT_WORK(&mm->async_put_work, mmput_async_fn);
@@ -20,3 +34,6 @@
  	}
  }
  EXPORT_SYMBOL_GPL(mmput_async);
+-- 
+2.54.0
+
