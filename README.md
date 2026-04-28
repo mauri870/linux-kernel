@@ -2,7 +2,7 @@
 
 Custom Linux kernel tuned for gaming on dual-CCD AMD X3D processors. The X3D CCD run tickless to minimize jitter while frequency cores handle interrupts at 1000Hz tickrate. Built with Clang/ThinLTO and patched with BORE scheduling, BBR3 TCP congestion control, and various desktop-focused tweaks.
 
-- Linux v7.0
+- Linux v7.1
 - Patches
   - `drm:` [HDMI FRL (for 4k@144hz, HDMI 2.1 support for AMD GPUs)](https://github.com/mkopec/linux/tree/hdmi_frl)
   - `sched:` [BORE (Burst-Oriented Response Enhancer) scheduler](https://github.com/firelzrd/bore-scheduler)
