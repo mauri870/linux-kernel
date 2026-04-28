@@ -43,7 +43,6 @@ source=(
   0005-cflags-O3.patch
   0006-disable-split-lock.patch
   0007-tcp-bbr3.patch
-  0008-clockevents-add-missing-resets.patch
   0009-tick-nohz-fix-wrong-nohz-idle-cpu-state.patch
   0010-posted-msi-enable-by-default.patch
   0011-sched-better-idle-balance.patch
@@ -72,10 +71,9 @@ b2sums=(
   'SKIP'
   'SKIP'
   'SKIP'
-  'SKIP'
 )
 
-export LINUX_COMMIT=028ef9c96e96197026887c0f092424679298aae8
+export LINUX_COMMIT=6de23f81a5e08be8fbf5e8d7e9febc72a5b5f27f # v7.0-rc1
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
