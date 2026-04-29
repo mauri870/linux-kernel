@@ -1,7 +1,7 @@
 # Maintainer: Mauri de Souza Meneguzzo <mauri870@gmail.com>
 
 pkgbase=linux-mauri870
-pkgver=7.0.0.master
+pkgver=7.1.0.master
 pkgrel=1
 pkgdesc="My custom Linux mainline with added patches and optimizations"
 url="https://www.kernel.org"
