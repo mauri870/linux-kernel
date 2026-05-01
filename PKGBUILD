@@ -3,7 +3,7 @@
 pkgbase=linux-mauri870
 pkgver=7.0.0.master
 pkgrel=1
-pkgdesc="My custom Linux mainline with added patches and optimizations"
+pkgdesc="My custom Linux with added patches and optimizations"
 url="https://www.kernel.org"
 arch=(x86_64)
 license=(GPL-2.0-only)
