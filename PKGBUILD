@@ -143,7 +143,7 @@ _package() {
     dmemcg-booster # for cgroup-vram.patch
     initramfs
     kmod
-    plasma-foreground-booster # for cgroup-vram.patch
+    plasma-foreground-booster-dmemcg # for cgroup-vram.patch
   )
   optdepends=(
     'linux-firmware: firmware images needed for some devices'
