@@ -1,7 +1,7 @@
 # Maintainer: Mauri de Souza Meneguzzo <mauri870@gmail.com>
 
 pkgbase=linux-mauri870
-pkgver=7.0.0.master
+pkgver=7.1.0.rc1
 pkgrel=1
 pkgdesc="My custom Linux mainline with added patches and optimizations"
 url="https://www.kernel.org"
@@ -43,7 +43,6 @@ source=(
   0005-cflags-O3.patch
   0006-disable-split-lock.patch
   0007-tcp-bbr3.patch
-  0008-clockevents-add-missing-resets.patch
   0009-tick-nohz-fix-wrong-nohz-idle-cpu-state.patch
   0010-posted-msi-enable-by-default.patch
   0011-sched-better-idle-balance.patch
@@ -72,10 +71,9 @@ b2sums=(
   'SKIP'
   'SKIP'
   'SKIP'
-  'SKIP'
 )
 
-export LINUX_COMMIT=028ef9c96e96197026887c0f092424679298aae8
+export LINUX_COMMIT=254f49634ee16a731174d2ae34bc50bd5f45e731
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
