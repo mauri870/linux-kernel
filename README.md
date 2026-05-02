@@ -20,6 +20,7 @@ Custom Linux kernel tuned for gaming on dual-CCD AMD X3D processors. The X3D CCD
   - `sched:` rate-limit `sched_yield` to once per jiffy (fixes Proton/Wine games that spam yield)
   - `mm:` place shared libraries below PIE binary in address space (better code/library cache locality)
   - `mm:` use `mmput_async` on process exit (avoids blocking mm teardown under memory pressure)
+  - `time:` reduce default `timer_slack_ns` from 50µs to 50ns (tighter hrtimer coalescing window for nanosleep/select/futex; inherited by all processes from PID 1)
 - Config
   - `PREEMPT_FULL`
   - `NO_HZ_FULL` for tickless

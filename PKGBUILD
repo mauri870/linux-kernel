@@ -53,8 +53,10 @@ source=(
   0015-mm-libs-grow-down.patch
   0016-mm-mmput-async.patch
   0017-cgroup-vram.patch
+  0018-slack.patch
 )
 b2sums=(
+  'SKIP'
   'SKIP'
   'SKIP'
   'SKIP'
