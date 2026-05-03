@@ -904,7 +904,11 @@ index aec7805b1d37..115f18167130 100644
  }
  
  /* Save "last known good" cwnd so we can restore it after losses or PROBE_RTT */
-@@ -335,7 +537,9 @@ __bpf_kfunc static void bbr_cwnd_event_tx_start(struct sock *sk)
+@@ -333,2 +535,2 @@ static void bbr_save_cwnd(struct sock *sk)
+-__bpf_kfunc static void bbr_cwnd_event_tx_start(struct sock *sk)
++__bpf_kfunc static void bbr_cwnd_event(struct sock *sk, enum tcp_ca_event event)
+ {
+@@ -335,7 +537,9 @@ __bpf_kfunc static void bbr_cwnd_event(struct sock *sk, enum tcp_ca_event event)
  	struct tcp_sock *tp = tcp_sk(sk);
  	struct bbr *bbr = inet_csk_ca(sk);
  
@@ -915,7 +919,7 @@ index aec7805b1d37..115f18167130 100644
  		bbr->idle_restart = 1;
  		bbr->ack_epoch_mstamp = tp->tcp_mstamp;
  		bbr->ack_epoch_acked = 0;
-@@ -346,6 +550,16 @@ __bpf_kfunc static void bbr_cwnd_event_tx_start(struct sock *sk)
+@@ -346,6 +550,16 @@ __bpf_kfunc static void bbr_cwnd_event(struct sock *sk, enum tcp_ca_event event)
  			bbr_set_pacing_rate(sk, bbr_bw(sk), BBR_UNIT);
  		else if (bbr->mode == BBR_PROBE_RTT)
  			bbr_check_probe_rtt_done(sk);
@@ -3009,7 +3013,8 @@ index aec7805b1d37..115f18167130 100644
  	.sndbuf_expand	= bbr_sndbuf_expand,
 +	.skb_marked_lost = bbr_skb_marked_lost,
  	.undo_cwnd	= bbr_undo_cwnd,
- 	.cwnd_event_tx_start	= bbr_cwnd_event_tx_start,
+-	.cwnd_event_tx_start	= bbr_cwnd_event_tx_start,
++	.cwnd_event		= bbr_cwnd_event,
  	.ssthresh	= bbr_ssthresh,
 -	.min_tso_segs	= bbr_min_tso_segs,
 +	.tso_segs	= bbr_tso_segs,
@@ -3022,7 +3027,8 @@ index aec7805b1d37..115f18167130 100644
  BTF_ID_FLAGS(func, bbr_sndbuf_expand)
 +BTF_ID_FLAGS(func, bbr_skb_marked_lost)
  BTF_ID_FLAGS(func, bbr_undo_cwnd)
- BTF_ID_FLAGS(func, bbr_cwnd_event_tx_start)
+-BTF_ID_FLAGS(func, bbr_cwnd_event_tx_start)
++BTF_ID_FLAGS(func, bbr_cwnd_event)
  BTF_ID_FLAGS(func, bbr_ssthresh)
 -BTF_ID_FLAGS(func, bbr_min_tso_segs)
 +BTF_ID_FLAGS(func, bbr_tso_segs)
