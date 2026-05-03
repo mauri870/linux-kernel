@@ -2,8 +2,6 @@
 
 Custom Linux kernel tuned for gaming on dual-CCD AMD X3D processors. The X3D CCD run tickless to minimize jitter while frequency cores handle interrupts at 1000Hz tickrate. Built with Clang/ThinLTO and patched with BORE scheduling, BBR3 TCP congestion control, and various desktop-focused tweaks.
 
-> For the 7.1 version, see the experimental [7.1 branch](https://github.com/mauri870/linux-kernel/tree/7.1) 
-
 - Linux v7.0
 - Patches
   - `drm:` [HDMI FRL (for 4k@144hz, HDMI 2.1 support for AMD GPUs)](https://github.com/mkopec/linux/tree/hdmi_frl)
@@ -22,6 +20,7 @@ Custom Linux kernel tuned for gaming on dual-CCD AMD X3D processors. The X3D CCD
   - `sched:` rate-limit `sched_yield` to once per jiffy (fixes Proton/Wine games that spam yield)
   - `mm:` place shared libraries below PIE binary in address space (better code/library cache locality)
   - `mm:` use `mmput_async` on process exit (avoids blocking mm teardown under memory pressure)
+  - `time:` reduce default `timer_slack_ns` from 50µs to 50ns (tighter hrtimer coalescing window for nanosleep/select/futex; inherited by all processes from PID 1)
 - Config
   - `PREEMPT_FULL`
   - `NO_HZ_FULL` for tickless

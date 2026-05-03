@@ -3,7 +3,7 @@
 pkgbase=linux-mauri870
 pkgver=7.1.0.rc1
 pkgrel=1
-pkgdesc="My custom Linux mainline with added patches and optimizations"
+pkgdesc="My custom Linux with added patches and optimizations"
 url="https://www.kernel.org"
 arch=(x86_64)
 license=(GPL-2.0-only)
@@ -52,8 +52,10 @@ source=(
   0015-mm-libs-grow-down.patch
   0016-mm-mmput-async.patch
   0017-cgroup-vram.patch
+  0018-slack.patch
 )
 b2sums=(
+  'SKIP'
   'SKIP'
   'SKIP'
   'SKIP'
@@ -141,7 +143,7 @@ _package() {
     dmemcg-booster # for cgroup-vram.patch
     initramfs
     kmod
-    plasma-foreground-booster # for cgroup-vram.patch
+    plasma-foreground-booster-dmemcg # for cgroup-vram.patch
   )
   optdepends=(
     'linux-firmware: firmware images needed for some devices'
