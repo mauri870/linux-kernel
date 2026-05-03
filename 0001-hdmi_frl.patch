@@ -7,7 +7,6 @@ Port HDMI 2.1+ FRL signaling to Linux 7.1-rc1. This patchset adds a
 new SIGNAL_TYPE_HDMI_FRL signal type and all required changes to the
 AMD display core to support HDMI FRL connections.
 
-Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 ---
  .github/ISSUE_TEMPLATE/issue.md               |  10 +
  .github/workflows/genpatch.yml                |  22 +
@@ -250,7 +249,7 @@ index e96a12ff2d31..c9be6ecf21b1 100644
  		}
  	}
  
-@@ -7467,9 +7500,11 @@ create_stream_for_sink(struct drm_connector *connector,
+@@ -7467,9 +7500,14 @@ create_stream_for_sink(struct drm_connector *connector,
  		connector,
  		sink);
  
@@ -260,11 +259,14 @@ index e96a12ff2d31..c9be6ecf21b1 100644
 +		update_stream_signal(stream, sink);
  
 -	if (stream->signal == SIGNAL_TYPE_HDMI_TYPE_A)
-+	if (dc_is_hdmi_signal(stream->signal))
++	if (dc_is_hdmi_signal(stream->signal)) {
++		stream->hdmi_allm_active = sink->edid_caps.allm;
++		mod_build_hf_vsif_infopacket(stream, &stream->hfvsif_infopacket);
  		mod_build_hf_vsif_infopacket(stream, &stream->vsp_infopacket);
++	}
  
  	if (stream->signal == SIGNAL_TYPE_DISPLAY_PORT ||
-@@ -8641,6 +8676,7 @@ static int to_drm_connector_type(enum signal_type st, uint32_t connector_id)
+@@ -8641,6 +8679,7 @@ static int to_drm_connector_type(enum signal_type st, uint32_t connector_id)
  {
  	switch (st) {
  	case SIGNAL_TYPE_HDMI_TYPE_A:
@@ -272,7 +274,18 @@ index e96a12ff2d31..c9be6ecf21b1 100644
  		return DRM_MODE_CONNECTOR_HDMIA;
  	case SIGNAL_TYPE_EDP:
  		return DRM_MODE_CONNECTOR_eDP;
-@@ -9690,7 +9726,7 @@ static void update_freesync_state_on_stream(
+@@ -9248,6 +9287,10 @@ int amdgpu_dm_initialize_hdmi_connector(struct amdgpu_dm_connector *aconnector)
+ 	struct drm_device *ddev = aconnector->base.dev;
+ 	struct device *hdmi_dev = ddev->dev;
+ 
++	/* ALLM */
++	drm_connector_attach_allm_capable_property(&aconnector->base);
++	drm_connector_attach_allm_mode_property(&aconnector->base);
++
+ 	if (amdgpu_dc_debug_mask & DC_DISABLE_HDMI_CEC) {
+ 		drm_info(ddev, "HDMI-CEC feature masked\n");
+ 		return -EINVAL;
+@@ -9690,7 +9733,7 @@ static void update_freesync_state_on_stream(
  
  	aconn = (struct amdgpu_dm_connector *)new_stream->dm_stream_context;
  
@@ -281,7 +294,84 @@ index e96a12ff2d31..c9be6ecf21b1 100644
  		pack_sdp_v1_3 = aconn->pack_sdp_v1_3;
  
  		if (aconn->vsdb_info.amd_vsdb_version == 1)
-@@ -13405,10 +13441,9 @@ void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
+@@ -10911,6 +10954,31 @@ static int amdgpu_dm_atomic_setup_commit(struct drm_atomic_state *state)
+ 	return 0;
+ }
+ 
++static void update_allm_state_on_crtc_stream(struct dm_crtc_state *new_crtc_state,
++					     const struct drm_connector_state *new_conn)
++{
++	struct mod_freesync_config *config = &new_crtc_state->freesync_config;
++	struct dc_stream_state *new_stream = new_crtc_state->stream;
++	bool allm_active = false;
++
++	switch (new_conn->allm_mode) {
++	case DRM_ALLM_MODE_ENABLED_DYNAMIC:
++		allm_active = config->state == VRR_STATE_ACTIVE_VARIABLE ||
++			      new_stream->content_type == DISPLAY_CONTENT_TYPE_GAME;
++		break;
++
++	case DRM_ALLM_MODE_ENABLED_FORCED:
++		allm_active = true;
++		break;
++
++	case DRM_ALLM_MODE_DISABLED:
++	default:
++		allm_active = false;
++	}
++
++	new_stream->hdmi_allm_active = allm_active;
++}
++
+ /**
+  * amdgpu_dm_atomic_commit_tail() - AMDgpu DM's commit tail implementation.
+  * @state: The atomic state to commit
+@@ -10954,11 +11022,13 @@ static void amdgpu_dm_atomic_commit_tail(struct drm_atomic_state *state)
+ 		struct dm_connector_state *dm_new_con_state = to_dm_connector_state(new_con_state);
+ 		struct dm_connector_state *dm_old_con_state = to_dm_connector_state(old_con_state);
+ 		struct amdgpu_crtc *acrtc = to_amdgpu_crtc(dm_new_con_state->base.crtc);
++		struct amdgpu_dm_connector *dm_conn = to_amdgpu_dm_connector(connector);
+ 		struct dc_surface_update *dummy_updates;
+ 		struct dc_stream_update stream_update;
+ 		struct dc_info_packet hdr_packet;
+ 		struct dc_stream_status *status = NULL;
+ 		bool abm_changed, hdr_changed, scaling_changed, output_color_space_changed = false;
++		bool allm_changed = false;
+ 
+ 		memset(&stream_update, 0, sizeof(stream_update));
+ 
+@@ -10988,7 +11058,11 @@ static void amdgpu_dm_atomic_commit_tail(struct drm_atomic_state *state)
+ 		hdr_changed =
+ 			!drm_connector_atomic_hdr_metadata_equal(old_con_state, new_con_state);
+ 
+-		if (!scaling_changed && !abm_changed && !hdr_changed && !output_color_space_changed)
++		allm_changed = dm_conn->hdmi_allm_capable &&
++			       (new_con_state->allm_mode != old_con_state->allm_mode);
++
++		if (!scaling_changed && !abm_changed && !hdr_changed &&
++		    !output_color_space_changed && !allm_changed)
+ 			continue;
+ 
+ 		stream_update.stream = dm_new_crtc_state->stream;
+@@ -11018,6 +11092,17 @@ static void amdgpu_dm_atomic_commit_tail(struct drm_atomic_state *state)
+ 			stream_update.hdr_static_metadata = &hdr_packet;
+ 		}
+ 
++		if (allm_changed) {
++			update_allm_state_on_crtc_stream(dm_new_crtc_state, new_con_state);
++			mod_build_hf_vsif_infopacket(dm_new_crtc_state->stream,
++				&dm_new_crtc_state->stream->hfvsif_infopacket);
++
++			stream_update.hdmi_allm_active =
++				&dm_new_crtc_state->stream->hdmi_allm_active;
++			stream_update.hfvsif_infopacket =
++				&dm_new_crtc_state->stream->hfvsif_infopacket;
++		}
++
+ 		status = dc_stream_get_status(dm_new_crtc_state->stream);
+ 
+ 		if (WARN_ON(!status))
+@@ -13405,10 +13490,9 @@ void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
  		}
  	}
  
@@ -295,7 +385,7 @@ index e96a12ff2d31..c9be6ecf21b1 100644
  		i = parse_hdmi_amd_vsdb(amdgpu_dm_connector, edid, &vsdb_info);
  		if (i >= 0) {
  			amdgpu_dm_connector->vsdb_info = vsdb_info;
-@@ -13416,7 +13451,7 @@ void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
+@@ -13416,7 +13500,7 @@ void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
  
  			if (vsdb_info.freesync_supported && vsdb_info.amd_vsdb_version > 0) {
  				amdgpu_dm_connector->pack_sdp_v1_3 = true;
@@ -304,7 +394,7 @@ index e96a12ff2d31..c9be6ecf21b1 100644
  
  				amdgpu_dm_connector->min_vfreq = vsdb_info.min_refresh_rate_hz;
  				amdgpu_dm_connector->max_vfreq = vsdb_info.max_refresh_rate_hz;
-@@ -13434,7 +13469,7 @@ void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
+@@ -13434,7 +13518,7 @@ void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
  		dm_helpers_read_mccs_caps(adev->dm.dc->ctx, amdgpu_dm_connector->dc_link, sink);
  
  	if ((sink->sink_signal == SIGNAL_TYPE_HDMI_TYPE_A ||
@@ -313,6 +403,37 @@ index e96a12ff2d31..c9be6ecf21b1 100644
  		(!sink->edid_caps.freesync_vcp_code ||
  		(sink->edid_caps.freesync_vcp_code && !sink->mccs_caps.freesync_supported)))
  		freesync_capable = false;
+@@ -13441,3 +13525,18 @@ void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
+ 
++	if ((dc_is_hdmi_signal(sink->sink_signal) ||
++		 as_type == ADAPTIVE_SYNC_TYPE_PCON_ALLOWED) &&
++		connector->display_info.hdmi.vrr_cap.supported &&
++		connector->display_info.hdmi.vrr_cap.vrr_max > 0) {
++		amdgpu_dm_connector->min_vfreq =
++			connector->display_info.hdmi.vrr_cap.vrr_min;
++		amdgpu_dm_connector->max_vfreq =
++			connector->display_info.hdmi.vrr_cap.vrr_max;
++		connector->display_info.monitor_range.min_vfreq =
++			connector->display_info.hdmi.vrr_cap.vrr_min;
++		connector->display_info.monitor_range.max_vfreq =
++			connector->display_info.hdmi.vrr_cap.vrr_max;
++		freesync_capable = true;
++	}
++
+ 	if (do_mccs && sink->mccs_caps.freesync_supported && freesync_capable)
+ 		dm_helpers_mccs_vcp_set(adev->dm.dc->ctx, amdgpu_dm_connector->dc_link, sink);
+@@ -13455,6 +13554,11 @@ void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
+ 	if (connector->vrr_capable_property)
+ 		drm_connector_set_vrr_capable_property(connector,
+ 						       freesync_capable);
++
++	amdgpu_dm_connector->hdmi_allm_capable = connector->display_info.hdmi.allm;
++	if (connector->allm_capable_property)
++		drm_connector_set_allm_capable_property(
++			connector, connector->display_info.hdmi.allm);
+ }
+ 
+ void amdgpu_dm_trigger_timing_sync(struct drm_device *dev)
 diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
 index 74a8fe1a1999..569f6ca8e487 100644
 --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
