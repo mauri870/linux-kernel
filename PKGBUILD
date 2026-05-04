@@ -1,7 +1,7 @@
 # Maintainer: Mauri de Souza Meneguzzo <mauri870@gmail.com>
 
 pkgbase=linux-mauri870
-pkgver=7.1.0.rc1
+pkgver=7.1.0.rc2
 pkgrel=1
 pkgdesc="My custom Linux with added patches and optimizations"
 url="https://www.kernel.org"
@@ -75,7 +75,7 @@ b2sums=(
   'SKIP'
 )
 
-export LINUX_COMMIT=254f49634ee16a731174d2ae34bc50bd5f45e731
+export LINUX_COMMIT=7fd2df204f342fc17d1a0bfcd474b24232fb0f32
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"

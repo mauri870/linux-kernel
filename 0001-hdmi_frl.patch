@@ -1,18 +1,16 @@
 From a7d6e4a39857d8a318a67e591ca5684e7949c891 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Micha=C5=82=20Kope=C4=87?= <michal@nozomi.space>
 Date: Sat, 24 Jan 2026 20:42:10 +0100
-Subject: [PATCH 001/109] HDMI FRL
+Subject: [PATCH] HDMI FRL
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-[Ported to Linux 7.1-rc1 by: Mauri de Souza Meneguzzo <mauri870@gmail.com>]
+[Ported to Linux 7.1 by: Mauri de Souza Meneguzzo <mauri870@gmail.com>]
 
 Signed-off-by: Michał Kopeć <michal@nozomi.space>
 Signed-off-by: Mauri de Souza Meneguzzo <mauri870@gmail.com>
 ---
- .github/ISSUE_TEMPLATE/issue.md               |  10 +
- .github/workflows/genpatch.yml                |  22 +
  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  57 +-
  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h |   4 +
  .../amd/display/amdgpu_dm/amdgpu_dm_helpers.c |  78 +-
@@ -129,9 +127,7 @@ Signed-off-by: Mauri de Souza Meneguzzo <mauri870@gmail.com>
  include/drm/drm_connector.h                   | 131 ++-
  include/drm/drm_crtc.h                        |   9 +
  include/drm/drm_mode_config.h                 |   6 +
- 118 files changed, 8623 insertions(+), 285 deletions(-)
- create mode 100644 .github/ISSUE_TEMPLATE/issue.md
- create mode 100644 .github/workflows/genpatch.yml
+ 116 files changed, 8591 insertions(+), 285 deletions(-)
  create mode 100644 drivers/gpu/drm/amd/display/dc/hpo/dcn30/dcn30_hpo_hdmi_link_encoder.c
  create mode 100644 drivers/gpu/drm/amd/display/dc/hpo/dcn30/dcn30_hpo_hdmi_link_encoder.h
  create mode 100644 drivers/gpu/drm/amd/display/dc/hpo/dcn30/dcn30_hpo_hdmi_stream_encoder.c
@@ -142,50 +138,6 @@ Signed-off-by: Mauri de Souza Meneguzzo <mauri870@gmail.com>
  create mode 100644 drivers/gpu/drm/amd/display/dc/link/protocols/link_frl_training.c
  create mode 100644 drivers/gpu/drm/amd/display/dc/link/protocols/link_frl_training.h
 
-diff --git a/.github/ISSUE_TEMPLATE/issue.md b/.github/ISSUE_TEMPLATE/issue.md
-new file mode 100644
-index 000000000000..1cd10a4f2deb
---- /dev/null
-+++ b/.github/ISSUE_TEMPLATE/issue.md
-@@ -0,0 +1,10 @@
-+---
-+name: Issue
-+about: Bug report
-+title: ''
-+labels: ''
-+assignees: ''
-+
-+---
-+
-+<!-- Consider dumping register states using https://github.com/mkopec/dcn_regdump , and if possible, perform the same dump with a running Windows VM . This will help greatly with debugging. -->
-diff --git a/.github/workflows/genpatch.yml b/.github/workflows/genpatch.yml
-new file mode 100644
-index 000000000000..a0dcad457f93
---- /dev/null
-+++ b/.github/workflows/genpatch.yml
-@@ -0,0 +1,22 @@
-+name: Generate patch - Master branch
-+on:
-+  push:
-+    branches: hdmi_frl
-+
-+jobs:
-+  generate_patch:
-+    runs-on: ubuntu-24.04
-+    steps:
-+      - name: Checkout repository
-+        uses: actions/checkout@v4
-+        with:
-+          ref: hdmi_frl
-+          fetch-depth: 0
-+      - name: Generate patch
-+        run: git diff origin/master > 0001-amdgpu-frl.patch
-+      - name: Save artifacts
-+        uses: actions/upload-artifact@v4
-+        with:
-+          name: "Patch"
-+          path: 0001-amdgpu-frl.patch
-+          retention-days: 30
 diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
 index e96a12ff2d31..c9be6ecf21b1 100644
 --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
@@ -3196,10 +3148,10 @@ index 5273ca09fe12..89ea84e5aa7c 100644
  		audio_output->pll_info.audio_dto_source_clock_in_khz =
  				state->clk_mgr->funcs->get_dp_ref_clk_frequency(
  						state->clk_mgr);
-@@ -1643,7 +1659,13 @@ enum dc_status dce110_apply_single_controller_ctx_to_hw(
- 		dce110_select_crtc_source(pipe_ctx);
+@@ -1652,7 +1659,13 @@ enum dc_status dce110_apply_single_controller_ctx_to_hw(
+ 		hws->funcs.disable_stream_gating(dc, pipe_ctx);
  	}
- 
+
 -	if (pipe_ctx->stream_res.audio != NULL) {
 +	/* For HDMI FRL, the FRL rate may change during link training (rate
 +	 * fallback). Defer audio setup until after set_dpms_on so that
