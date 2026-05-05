@@ -10,7 +10,7 @@ My personal Linux kernel, tuned for gaming on modern hardware. Built with the la
   - `NTSYNC`
   - `NOHZ_FULL` for optional tickless
   - 1000 Hz tick rate
-  - LLVM/Clang + ThinLTO + `-march=native`
+  - LLVM/Clang + -O3 + ThinLTO + `-march=native`
 - Patches
   - `drm:` [HDMI FRL (for 4k@144hz, HDMI 2.1 support for AMD GPUs)](https://github.com/mkopec/linux/tree/hdmi_frl)
   - `sched:` [BORE (Burst-Oriented Response Enhancer) scheduler](https://github.com/firelzrd/bore-scheduler)

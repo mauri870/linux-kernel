@@ -9,18 +9,24 @@ avoid temporary files during compilation.
 
 Signed-off-by: Mauri de Souza Meneguzzo <mauri870@gmail.com>
 ---
- Makefile | 4 ++--
+ Makefile | 7 ++--
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/Makefile b/Makefile
 index 4f54c56856386..6954b7f44afb3 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -594,6 +594,7 @@ KBUILD_CFLAGS += -funsigned-char
+@@ -594,6 +594,13 @@ KBUILD_CFLAGS += -funsigned-char
  KBUILD_CFLAGS += -fno-common
  KBUILD_CFLAGS += -fno-PIE
  KBUILD_CFLAGS += -fno-strict-aliasing
 +KBUILD_CFLAGS += -pipe
++# Perform swing modulo scheduling immediately before the first scheduling pass.
++# This pass looks at innermost loops and reorders their instructions by
++# overlapping different iterations.
++KBUILD_CFLAGS += $(call cc-option,-fmodulo-sched -fmodulo-sched-allow-regmoves -fivopts)
++KBUILD_CFLAGS += $(call cc-option,-mllvm -enable-pipeliner)
++
  
  KBUILD_CPPFLAGS := -D__KERNEL__
  KBUILD_RUSTFLAGS := $(rust_common_flags) \
