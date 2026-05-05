@@ -1,6 +1,6 @@
 # linux-mauri870
 
-My personal Linux kernel, tuned for gaming on modern hardware. Built with the latest LLVM toolchain targeting native hardware, and patched with BORE scheduling, BBRv3 TCP congestion control, a 1000Hz tick rate, and various desktop-focused tweaks.
+My personal Linux kernel, tuned for gaming on modern hardware. Built with the latest LLVM toolchain targeting native compilation, configured with a 1000Hz tick rate, NTSYNC for low-latency synchronization, Transparent Hugepages, full preemption, sched_ext, and NOHZ_FULL tickless support. Patched with BORE scheduling, BBRv3 TCP congestion control, and various desktop-focused tweaks.
 
 - Linux v7.1-rc2
 - Config
