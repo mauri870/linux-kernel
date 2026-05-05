@@ -53,8 +53,17 @@ source=(
   0016-mm-mmput-async.patch
   0017-cgroup-vram.patch
   0018-slack.patch
+  0019-rwsem-spin-faster.patch
+  0020-ata-before-graphics.patch
+  0021-sched-wait-lifo-accept.patch
+  0022-tcp-write-buffer.patch
 )
 b2sums=(
+  'SKIP'
+  'SKIP'
+  'SKIP'
+  'SKIP'
+  'SKIP'
   'SKIP'
   'SKIP'
   'SKIP'

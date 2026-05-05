@@ -29,6 +29,9 @@ My personal Linux kernel, tuned for gaming on modern hardware. Built with the la
   - `mm:` place shared libraries below PIE binary in address space (better code/library cache locality)
   - `mm:` use `mmput_async` on process exit (avoids blocking mm teardown under memory pressure)
   - `time:` reduce default `timer_slack_ns` from 50µs to 50ns (tighter hrtimer coalescing window for nanosleep/select/futex; inherited by all processes from PID 1)
+  - `sched/wait`: do accept() in LIFO order for cache efficiency
+  - `boot:` parallelize ATA and GPU initialization
+  - `net:` increase TCP write buffer limit from 4MB to 16MB
 
 ## Build & Install
 
