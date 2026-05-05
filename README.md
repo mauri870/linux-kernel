@@ -1,8 +1,16 @@
 # linux-mauri870
 
-Custom Linux kernel tuned for gaming on dual-CCD AMD X3D processors. The X3D CCD run tickless to minimize jitter while frequency cores handle interrupts at 1000Hz tickrate. Built with Clang/ThinLTO and patched with BORE scheduling, BBR3 TCP congestion control, and various desktop-focused tweaks.
+My personal Linux kernel, tuned for gaming on modern hardware. Built with the latest LLVM toolchain targeting native hardware, and patched with BORE scheduling, BBRv3 TCP congestion control, a 1000Hz tick rate, and various desktop-focused tweaks.
 
 - Linux v7.1-rc2
+- Config
+  - `PREEMPT_FULL`
+  - `sched_ext`
+  - `TRANSPARENT_HUGEPAGE_MADVISE`
+  - `NTSYNC`
+  - `NOHZ_FULL` for optional tickless
+  - 1000 Hz tick rate
+  - LLVM/Clang + ThinLTO + `-march=native`
 - Patches
   - `drm:` [HDMI FRL (for 4k@144hz, HDMI 2.1 support for AMD GPUs)](https://github.com/mkopec/linux/tree/hdmi_frl)
   - `sched:` [BORE (Burst-Oriented Response Enhancer) scheduler](https://github.com/firelzrd/bore-scheduler)
@@ -21,14 +29,6 @@ Custom Linux kernel tuned for gaming on dual-CCD AMD X3D processors. The X3D CCD
   - `mm:` place shared libraries below PIE binary in address space (better code/library cache locality)
   - `mm:` use `mmput_async` on process exit (avoids blocking mm teardown under memory pressure)
   - `time:` reduce default `timer_slack_ns` from 50µs to 50ns (tighter hrtimer coalescing window for nanosleep/select/futex; inherited by all processes from PID 1)
-- Config
-  - `PREEMPT_FULL`
-  - `NO_HZ_FULL` for tickless
-  - `sched_ext`
-  - `TRANSPARENT_HUGEPAGE_MADVISE`
-  - `NTSYNC`
-  - 1000 Hz tick rate
-  - LLVM/Clang 22 + ThinLTO + `-march=native`
 
 ## Build & Install
 
