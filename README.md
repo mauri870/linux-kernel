@@ -1,6 +1,6 @@
 # linux-mauri870
 
-My personal Linux kernel, tuned for gaming on modern hardware. Built with the latest LLVM toolchain targeting native compilation, configured with a 1000Hz tick rate, NTSYNC for low-latency synchronization, Transparent Hugepages, full preemption, sched_ext, and NOHZ_FULL tickless support. Patched with BORE scheduling, BBRv3 TCP congestion control, and various desktop-focused tweaks.
+My personal Linux kernel, tuned for gaming on modern hardware. Built with the latest LLVM toolchain targeting native compilation, configured with a 1000Hz tick rate, NTSYNC for low-latency synchronization, Transparent Hugepages, full preemption, sched_ext, and NOHZ_FULL tickless support. Patched with BORE scheduling, HDMI 2.1 48Gbps with ALLM(auto low-latency) and VRR(FreeSync) for AMD GPUs, BBRv3 TCP congestion control, and various desktop-focused tweaks.
 
 - Linux v7.1-rc2
 - Config
@@ -12,7 +12,7 @@ My personal Linux kernel, tuned for gaming on modern hardware. Built with the la
   - 1000 Hz tick rate
   - LLVM/Clang + -O3 + ThinLTO + `-march=native`
 - Patches
-  - `drm:` [HDMI FRL (for 4k@144hz, HDMI 2.1 support for AMD GPUs)](https://github.com/mkopec/linux/tree/hdmi_frl)
+  - `drm:` [HDMI FRL (HDMI 2.1(48 Gbps), VRR(FreeSync), ALLM (Auto Low Latency Mode), 10-bit 4:4:4 support for AMD GPUs)](https://github.com/mkopec/linux/tree/hdmi_frl)
   - `sched:` [BORE (Burst-Oriented Response Enhancer) scheduler](https://github.com/firelzrd/bore-scheduler)
   - `compiler:` [LLVM Polly (polyhedral loop optimizer for better cache locality and parallelism)](https://github.com/CachyOS/kernel-patches/blob/master/7.0/misc/0001-clang-polly.patch)
   - `mm:` [Lazy RSS stat percpu counters (faster fork/exec for single-threaded tasks)](https://lore.kernel.org/lkml/20251127233635.4170047-2-krisman@suse.de/)
