@@ -81,7 +81,6 @@ b2sums=(
   'SKIP'
   'SKIP'
   'SKIP'
-  'SKIP'
 )
 
 export LINUX_COMMIT=7fd2df204f342fc17d1a0bfcd474b24232fb0f32
