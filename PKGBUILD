@@ -140,8 +140,8 @@ prepare() {
 
 build() {
   cd $_srcname
-  make LLVM=1 V=1 -j$(nproc) all
-  make LLVM=1 V=1 -j$(nproc) -C tools/bpf/bpftool vmlinux.h feature-clang-bpf-co-re=1
+  make LLVM=1 LOCALVERSION='' V=1 -j$(nproc) all
+  make LLVM=1 LOCALVERSION='' V=1 -j$(nproc) -C tools/bpf/bpftool vmlinux.h feature-clang-bpf-co-re=1
 }
 
 _package() {
