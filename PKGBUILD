@@ -99,31 +99,19 @@ prepare() {
 
   echo "Enforcing commit $LINUX_COMMIT..."
   git fetch origin
+  git clean -fdx
   git checkout -f "$LINUX_COMMIT"
+  git reset --hard "$LINUX_COMMIT"
 
-  local patch_stamp=".patch-stamp"
-  local patch_hash
-  patch_hash=$(cat "${source[@]/#/..\/}" 2>/dev/null | b2sum | cut -d' ' -f1) || patch_hash=""
-
-  if [[ ! -f "$patch_stamp" ]] || [[ "$(cat "$patch_stamp")" != "$patch_hash" ]] || git diff --quiet HEAD; then
-    echo "Patches changed, resetting tree..."
-    git checkout "$LINUX_COMMIT"
-    git reset --hard HEAD
-    git clean -fdx
-
-    local src
-    for src in "${source[@]}"; do
-      src="${src%%::*}"
-      src="${src##*/}"
-      [[ $src = 0[0-9]*.patch ]] || continue
-      echo "Applying patch $src..."
-      git apply "../$src"
-    done
-
-    echo "$patch_hash" > "$patch_stamp"
-  else
-    echo "Patches unchanged, skipping reset."
-  fi
+  echo "Applying patches..."
+  local src
+  for src in "${source[@]}"; do
+    src="${src%%::*}"
+    src="${src##*/}"
+    [[ $src = 0[0-9]*.patch ]] || continue
+    echo "Applying patch $src..."
+    git apply "../$src"
+  done
 
   echo "Setting version..."
   echo "-$pkgrel" > localversion.10-pkgrel
@@ -134,7 +122,7 @@ prepare() {
   make LLVM=1 olddefconfig
   diff -u ../config .config || :
 
-  make -s kernelrelease > version
+  make LOCALVERSION='' -s kernelrelease > version
   echo "Prepared $pkgbase version $(<version)"
 }
 
