@@ -41,7 +41,13 @@ Compiling the kernel takes around 15-20min on a 9950X3D with the default `-j$(np
 makepkg -si -f
 ```
 
-## Kernel Boot Args
+## Recommendations
+
+### Optional packages
+
+Install `dmemcg-booster` and `plasma-foreground-booster-dmemcg` to make use of the cgroup vram patch.
+
+###  Kernel Boot Args
 
 For dual-CCD asymmetric CPUs such as 9950X3D/9900X3D, configure the [kernel boot args](https://wiki.archlinux.org/title/Kernel_parameters) so X3D cores run tickless and offload RCU callbacks and IRQs to CCD1:
 

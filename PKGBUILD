@@ -148,12 +148,12 @@ _package() {
   pkgdesc="The $pkgdesc kernel and modules"
   depends=(
     coreutils
-    dmemcg-booster # for cgroup-vram.patch
     initramfs
     kmod
-    plasma-foreground-booster-dmemcg # for cgroup-vram.patch
   )
   optdepends=(
+    'dmemcg-booster: for cgroup-vram.patch',
+    'plasma-foreground-booster-dmemcg: for cgroup-vram.patch',
     'linux-firmware: firmware images needed for some devices'
     'scx-scheds: to use sched-ext schedulers'
     'wireless-regdb: to set the correct wireless channels of your country'
