@@ -3,21 +3,24 @@ From: Peter Jung <admin@ptr1337.dev>
 Date: Wed, 8 Apr 2026 19:07:32 +0200
 Subject: [PATCH] cgroup-vram
 
+[Ported to Linux 7.1-rc4 by: Mauri de Souza Meneguzzo <mauri870@gmail.com>]
+
 Signed-off-by: Peter Jung <admin@ptr1337.dev>
+Signed-off-by: Mauri de Souza Meneguzzo <mauri870@gmail.com>
 ---
- drivers/gpu/drm/ttm/ttm_bo.c       | 221 +++++++++++++++++++++++++----
- drivers/gpu/drm/ttm/ttm_resource.c |  48 +++++--
+ drivers/gpu/drm/ttm/ttm_bo.c       | 221 ++++++++++++++++++++++++++++++++-----
+ drivers/gpu/drm/ttm/ttm_resource.c |  51 ++++++---
  include/drm/ttm/ttm_resource.h     |   6 +-
- include/linux/cgroup.h             |  21 +++
- include/linux/cgroup_dmem.h        |  25 ++++
- kernel/cgroup/dmem.c               |  91 ++++++++++++
- 6 files changed, 369 insertions(+), 43 deletions(-)
+ include/linux/cgroup.h             |  21 ++++
+ include/linux/cgroup_dmem.h        |  25 +++++
+ kernel/cgroup/dmem.c               |  91 +++++++++++++++
+ 6 files changed, 369 insertions(+), 46 deletions(-)
 
 diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
-index 0765d69423d2..73b19c5d06f7 100644
+index bcd76f6bb7f0..2aba86174ad5 100644
 --- a/drivers/gpu/drm/ttm/ttm_bo.c
 +++ b/drivers/gpu/drm/ttm/ttm_bo.c
-@@ -489,6 +489,117 @@ int ttm_bo_evict_first(struct ttm_device *bdev, struct ttm_resource_manager *man
+@@ -488,6 +488,117 @@ int ttm_bo_evict_first(struct ttm_device *bdev, struct ttm_resource_manager *man
  	return ret;
  }
  
@@ -135,7 +138,7 @@ index 0765d69423d2..73b19c5d06f7 100644
  /**
   * struct ttm_bo_evict_walk - Parameters for the evict walk.
   */
-@@ -504,22 +615,61 @@ struct ttm_bo_evict_walk {
+@@ -503,22 +614,61 @@ struct ttm_bo_evict_walk {
  	/** @evicted: Number of successful evictions. */
  	unsigned long evicted;
  
@@ -201,7 +204,7 @@ index 0765d69423d2..73b19c5d06f7 100644
  		return 0;
  
  	if (bo->pin_count || !bo->bdev->funcs->eviction_valuable(bo, evict_walk->place))
-@@ -538,8 +688,9 @@ static s64 ttm_bo_evict_cb(struct ttm_lru_walk *walk, struct ttm_buffer_object *
+@@ -537,8 +687,9 @@ static s64 ttm_bo_evict_cb(struct ttm_lru_walk *walk, struct ttm_buffer_object *
  
  	evict_walk->evicted++;
  	if (evict_walk->res)
@@ -213,7 +216,7 @@ index 0765d69423d2..73b19c5d06f7 100644
  	if (lret == 0)
  		return 1;
  out:
-@@ -561,7 +712,7 @@ static int ttm_bo_evict_alloc(struct ttm_device *bdev,
+@@ -560,7 +711,7 @@ static int ttm_bo_evict_alloc(struct ttm_device *bdev,
  			      struct ttm_operation_ctx *ctx,
  			      struct ww_acquire_ctx *ticket,
  			      struct ttm_resource **res,
@@ -222,7 +225,7 @@ index 0765d69423d2..73b19c5d06f7 100644
  {
  	struct ttm_bo_evict_walk evict_walk = {
  		.walk = {
-@@ -574,15 +725,21 @@ static int ttm_bo_evict_alloc(struct ttm_device *bdev,
+@@ -573,15 +724,21 @@ static int ttm_bo_evict_alloc(struct ttm_device *bdev,
  		.place = place,
  		.evictor = evictor,
  		.res = res,
@@ -247,7 +250,7 @@ index 0765d69423d2..73b19c5d06f7 100644
  		evict_walk.try_low = true;
  		lret = ttm_lru_walk_for_evict(&evict_walk.walk, bdev, man, 1);
  	}
-@@ -603,11 +760,13 @@ static int ttm_bo_evict_alloc(struct ttm_device *bdev,
+@@ -602,11 +759,13 @@ static int ttm_bo_evict_alloc(struct ttm_device *bdev,
  	} while (!lret && evict_walk.evicted);
  
  	/* We hit the low limit? Try once more */
@@ -262,7 +265,7 @@ index 0765d69423d2..73b19c5d06f7 100644
  	if (lret < 0)
  		return lret;
  	if (lret == 0)
-@@ -725,9 +884,8 @@ static int ttm_bo_alloc_resource(struct ttm_buffer_object *bo,
+@@ -724,9 +883,8 @@ static int ttm_bo_alloc_resource(struct ttm_buffer_object *bo,
  
  	for (i = 0; i < placement->num_placement; ++i) {
  		const struct ttm_place *place = &placement->placement[i];
@@ -273,14 +276,14 @@ index 0765d69423d2..73b19c5d06f7 100644
  
  		man = ttm_manager_type(bdev, place->mem_type);
  		if (!man || !ttm_resource_manager_used(man))
-@@ -737,25 +895,30 @@ static int ttm_bo_alloc_resource(struct ttm_buffer_object *bo,
+@@ -736,25 +894,30 @@ static int ttm_bo_alloc_resource(struct ttm_buffer_object *bo,
  				    TTM_PL_FLAG_FALLBACK))
  			continue;
  
 -		may_evict = (force_space && place->mem_type != TTM_PL_SYSTEM);
 -		ret = ttm_resource_alloc(bo, place, res, force_space ? &limit_pool : NULL);
 -		if (ret) {
--			if (ret != -ENOSPC && ret != -EAGAIN) {
+-			if (ret != -ENOSPC) {
 -				dmem_cgroup_pool_state_put(limit_pool);
 -				return ret;
 -			}
@@ -321,10 +324,10 @@ index 0765d69423d2..73b19c5d06f7 100644
  
  		ret = ttm_bo_add_pipelined_eviction_fences(bo, man, ctx->no_wait_gpu);
 diff --git a/drivers/gpu/drm/ttm/ttm_resource.c b/drivers/gpu/drm/ttm/ttm_resource.c
-index 192fca24f37e..a8a836f6e376 100644
+index 154d6739256f..02eca679cb68 100644
 --- a/drivers/gpu/drm/ttm/ttm_resource.c
 +++ b/drivers/gpu/drm/ttm/ttm_resource.c
-@@ -373,30 +373,52 @@ void ttm_resource_fini(struct ttm_resource_manager *man,
+@@ -386,33 +386,52 @@ void ttm_resource_fini(struct ttm_resource_manager *man,
  }
  EXPORT_SYMBOL(ttm_resource_fini);
  
@@ -373,8 +376,11 @@ index 192fca24f37e..a8a836f6e376 100644
  
 -	if (man->cg) {
 -		ret = dmem_cgroup_try_charge(man->cg, bo->base.size, &pool, ret_limit_pool);
--		if (ret)
+-		if (ret) {
+-			if (ret == -EAGAIN)
+-				ret = -ENOSPC;
 -			return ret;
+-		}
 -	}
 -
  	ret = man->func->alloc(man, bo, place, res_ptr);
@@ -391,10 +397,10 @@ index 192fca24f37e..a8a836f6e376 100644
  	spin_lock(&bo->bdev->lru_lock);
  	ttm_resource_add_bulk_move(*res_ptr, bo);
 diff --git a/include/drm/ttm/ttm_resource.h b/include/drm/ttm/ttm_resource.h
-index 33e80f30b8b8..549b5b796884 100644
+index a5d386583fb6..e567b7ec8218 100644
 --- a/include/drm/ttm/ttm_resource.h
 +++ b/include/drm/ttm/ttm_resource.h
-@@ -456,10 +456,14 @@ void ttm_resource_init(struct ttm_buffer_object *bo,
+@@ -458,10 +458,14 @@ void ttm_resource_init(struct ttm_buffer_object *bo,
  void ttm_resource_fini(struct ttm_resource_manager *man,
  		       struct ttm_resource *res);
  
@@ -411,10 +417,10 @@ index 33e80f30b8b8..549b5b796884 100644
  bool ttm_resource_intersects(struct ttm_device *bdev,
  			     struct ttm_resource *res,
 diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index bc892e3b37ee..560ae995e3a5 100644
+index f6d037a30fd8..fc111e19f99d 100644
 --- a/include/linux/cgroup.h
 +++ b/include/linux/cgroup.h
-@@ -561,6 +561,27 @@ static inline struct cgroup *cgroup_ancestor(struct cgroup *cgrp,
+@@ -623,6 +623,27 @@ static inline struct cgroup *cgroup_ancestor(struct cgroup *cgrp,
  	return cgrp->ancestors[ancestor_level];
  }
  
@@ -486,10 +492,10 @@ index dd4869f1d736..9d72457c4cb9 100644
  { }
  
 diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
-index 9d95824dc6fa..29197d3801ac 100644
+index 4753a67d0f0f..7d22536be6d3 100644
 --- a/kernel/cgroup/dmem.c
 +++ b/kernel/cgroup/dmem.c
-@@ -694,6 +694,97 @@ int dmem_cgroup_try_charge(struct dmem_cgroup_region *region, u64 size,
+@@ -695,6 +695,97 @@ int dmem_cgroup_try_charge(struct dmem_cgroup_region *region, u64 size,
  }
  EXPORT_SYMBOL_GPL(dmem_cgroup_try_charge);
  
@@ -587,5 +593,3 @@ index 9d95824dc6fa..29197d3801ac 100644
  static int dmem_cgroup_region_capacity_show(struct seq_file *sf, void *v)
  {
  	struct dmem_cgroup_region *region;
--- 
-2.53.0
