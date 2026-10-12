@@ -2,7 +2,7 @@
 
 My personal Linux kernel, tuned for gaming on modern hardware. Built with the latest LLVM toolchain targeting native compilation, configured with a 1000Hz tick rate, NTSYNC for low-latency synchronization, Transparent Hugepages, full preemption, sched_ext, and NOHZ_FULL tickless support. Patched with BORE scheduling, HDMI 2.1 48Gbps with ALLM(auto low-latency) and VRR(FreeSync) for AMD GPUs, Google's BBRv3 TCP congestion control, increased power limit for AMD GPUs and various desktop-focused tweaks.
 
-- Linux mainline v7.3-rc6
+- Linux mainline v7.3-rc7
 - Config
   - `PREEMPT_FULL`
   - `sched_ext`
