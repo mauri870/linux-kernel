@@ -847,7 +847,7 @@ index e113056f8c01..4c2ac9a1ba3f 100644
 +    -
 +      name: error-report
 diff --git a/MAINTAINERS b/MAINTAINERS
-index f53047aa8d3c..ae6e37945073 100644
+index 782389bd5cd3..a624bbdd6c85 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -1218,7 +1218,7 @@ AMD KFD
@@ -948,7 +948,7 @@ index f53047aa8d3c..ae6e37945073 100644
  L:	dri-devel@lists.freedesktop.org
  S:	Maintained
  T:	git https://gitlab.freedesktop.org/drm/misc/kernel.git
-@@ -22690,7 +22729,7 @@ L:	amd-gfx@lists.freedesktop.org
+@@ -22688,7 +22727,7 @@ L:	amd-gfx@lists.freedesktop.org
  S:	Supported
  B:	https://gitlab.freedesktop.org/drm/amd/-/issues
  C:	irc://irc.oftc.net/radeon
@@ -5243,7 +5243,7 @@ index 08ed1eb69558..f9315e0472fe 100644
  	if (amdgpu_read_bios_from_vram(adev)) {
  		dev_info(adev->dev, "Fetched VBIOS from VRAM BAR\n");
 diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
-index 03b41f803520..65e13ad445bb 100644
+index ef8a61ce4b1d..5558e7330cf4 100644
 --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
 +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
 @@ -29,6 +29,7 @@
@@ -5263,7 +5263,7 @@ index 03b41f803520..65e13ad445bb 100644
  		r = amdgpu_vm_bo_update(adev, bo_va, false);
  		if (r)
  			return r;
-@@ -1440,6 +1439,12 @@ int amdgpu_cs_ioctl(struct drm_device *dev, void *data, struct drm_file *filp)
+@@ -1441,6 +1440,12 @@ int amdgpu_cs_ioctl(struct drm_device *dev, void *data, struct drm_file *filp)
  	if (!adev->accel_working)
  		return -EBUSY;
  
@@ -5276,7 +5276,7 @@ index 03b41f803520..65e13ad445bb 100644
  	r = amdgpu_cs_parser_init(&parser, adev, filp, data);
  	if (r) {
  		drm_err_ratelimited(dev, "Failed to initialize parser %d!\n", r);
-@@ -1804,8 +1809,6 @@ int amdgpu_cs_find_mapping(struct amdgpu_cs_parser *parser,
+@@ -1811,8 +1816,6 @@ int amdgpu_cs_find_mapping(struct amdgpu_cs_parser *parser,
  	struct amdgpu_bo_va_mapping *mapping;
  	int i, r;
  
@@ -5325,7 +5325,7 @@ index d53259a5b82f..2f0349233695 100644
  	amdgpu_ctx_put(ctx);
  	return r;
 diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-index ab7ccfaea22a..35cbd358c28c 100644
+index 4f9b72ac5698..3dc95d9accf2 100644
 --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
 +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
 @@ -36,6 +36,7 @@
@@ -5345,7 +5345,7 @@ index ab7ccfaea22a..35cbd358c28c 100644
  	if (!data) {
  		pm_runtime_put_autosuspend(adev_to_drm(adev)->dev);
  		amdgpu_virt_disable_access_debugfs(adev);
-@@ -1282,7 +1283,7 @@ static ssize_t amdgpu_debugfs_gpr_read(struct file *f, char __user *buf,
+@@ -1281,7 +1282,7 @@ static ssize_t amdgpu_debugfs_gpr_read(struct file *f, char __user *buf,
  	thread = (*pos & GENMASK_ULL(59, 52)) >> 52;
  	bank = (*pos & GENMASK_ULL(61, 60)) >> 60;
  
@@ -5354,7 +5354,7 @@ index ab7ccfaea22a..35cbd358c28c 100644
  	if (!data)
  		return -ENOMEM;
  
-@@ -2052,7 +2053,7 @@ static int amdgpu_debugfs_ib_preempt(void *data, u64 val)
+@@ -2037,7 +2038,7 @@ static int amdgpu_debugfs_ib_preempt(void *data, u64 val)
  		return -EBUSY;
  
  	length = ring->fence_drv.num_fences_mask + 1;
@@ -5363,7 +5363,7 @@ index ab7ccfaea22a..35cbd358c28c 100644
  	if (!fences)
  		return -ENOMEM;
  
-@@ -2192,7 +2193,7 @@ int amdgpu_debugfs_init(struct amdgpu_device *adev)
+@@ -2177,7 +2178,7 @@ int amdgpu_debugfs_init(struct amdgpu_device *adev)
  	amdgpu_debugfs_firmware_init(adev);
  	amdgpu_ta_if_debugfs_init(adev);
  
@@ -5372,7 +5372,7 @@ index ab7ccfaea22a..35cbd358c28c 100644
  
  #if defined(CONFIG_DRM_AMD_DC)
  	if (adev->dc_enabled)
-@@ -2246,6 +2247,20 @@ int amdgpu_debugfs_init(struct amdgpu_device *adev)
+@@ -2231,6 +2232,20 @@ int amdgpu_debugfs_init(struct amdgpu_device *adev)
  	debugfs_create_file("amdgpu_benchmark", 0200, root, adev,
  			    &amdgpu_benchmark_fops);
  
@@ -6809,7 +6809,7 @@ index 3017ddcefbe2..bff2d38f3571 100644
  	if (!ring->fence_drv.fences)
  		return -ENOMEM;
 diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
-index 165344f7197f..3229a82e342e 100644
+index afd8502a2bc4..ae916bc53ea8 100644
 --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
 +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
 @@ -33,6 +33,7 @@
@@ -6945,7 +6945,7 @@ index 165344f7197f..3229a82e342e 100644
  
  out_unlock:
  	drm_exec_fini(&exec);
-@@ -386,6 +400,14 @@ static int amdgpu_gem_object_mmap(struct drm_gem_object *obj, struct vm_area_str
+@@ -389,6 +403,14 @@ static int amdgpu_gem_object_mmap(struct drm_gem_object *obj, struct vm_area_str
  	return drm_gem_ttm_mmap(obj, vma);
  }
  
@@ -6960,7 +6960,7 @@ index 165344f7197f..3229a82e342e 100644
  const struct drm_gem_object_funcs amdgpu_gem_object_funcs = {
  	.free = amdgpu_gem_object_free,
  	.open = amdgpu_gem_object_open,
-@@ -395,6 +417,7 @@ const struct drm_gem_object_funcs amdgpu_gem_object_funcs = {
+@@ -398,6 +420,7 @@ const struct drm_gem_object_funcs amdgpu_gem_object_funcs = {
  	.vunmap = drm_gem_ttm_vunmap,
  	.mmap = amdgpu_gem_object_mmap,
  	.vm_ops = &amdgpu_gem_vm_ops,
@@ -6968,7 +6968,7 @@ index 165344f7197f..3229a82e342e 100644
  };
  
  static bool amdgpu_gem_are_domains_valid(u32 domains)
-@@ -433,6 +456,12 @@ int amdgpu_gem_create_ioctl(struct drm_device *dev, void *data,
+@@ -436,6 +459,12 @@ int amdgpu_gem_create_ioctl(struct drm_device *dev, void *data,
  	uint32_t handle, initial_domain;
  	int r;
  
@@ -6981,7 +6981,7 @@ index 165344f7197f..3229a82e342e 100644
  	/* reject invalid gem flags */
  	if (flags & ~AMDGPU_GEM_CREATE_SETTABLE_MASK)
  		return -EINVAL;
-@@ -574,6 +603,11 @@ int amdgpu_gem_userptr_ioctl(struct drm_device *dev, void *data,
+@@ -579,6 +608,11 @@ int amdgpu_gem_userptr_ioctl(struct drm_device *dev, void *data,
  			amdgpu_hmm_range_free(range);
  			goto release_object;
  		}
@@ -6993,7 +6993,7 @@ index 165344f7197f..3229a82e342e 100644
  		r = amdgpu_bo_reserve(bo, true);
  		if (r)
  			goto user_pages_done;
-@@ -583,6 +617,9 @@ int amdgpu_gem_userptr_ioctl(struct drm_device *dev, void *data,
+@@ -588,6 +622,9 @@ int amdgpu_gem_userptr_ioctl(struct drm_device *dev, void *data,
  		amdgpu_bo_placement_from_domain(bo, AMDGPU_GEM_DOMAIN_GTT);
  		r = ttm_bo_validate(&bo->tbo, &bo->placement, &ctx);
  		amdgpu_bo_unreserve(bo);
@@ -7003,7 +7003,7 @@ index 165344f7197f..3229a82e342e 100644
  		if (r)
  			goto user_pages_done;
  	}
-@@ -913,6 +950,12 @@ int amdgpu_gem_va_ioctl(struct drm_device *dev, void *data,
+@@ -918,6 +955,12 @@ int amdgpu_gem_va_ioctl(struct drm_device *dev, void *data,
  		abo = NULL;
  	}
  
@@ -12359,7 +12359,7 @@ index b96d885f6e33..fe61ed5b487e 100644
  #define CREATE_TRACE_POINTS
  #include "amdgpu_trace.h"
 diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-index 3838e464703c..6b3fbf79abc9 100644
+index 83968886c29a..8f0720a77520 100644
 --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
 +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
 @@ -56,6 +56,7 @@
@@ -12496,7 +12496,7 @@ index 3838e464703c..6b3fbf79abc9 100644
  }
  
  static void amdgpu_ttm_init_mem_train_resv_region(struct amdgpu_device *adev)
-@@ -2168,6 +2187,9 @@ int amdgpu_ttm_init(struct amdgpu_device *adev)
+@@ -2171,6 +2190,9 @@ int amdgpu_ttm_init(struct amdgpu_device *adev)
  	if (r)
  		return r;
  
@@ -12506,7 +12506,7 @@ index 3838e464703c..6b3fbf79abc9 100644
  	if (adev->mman.resv_region[AMDGPU_RESV_MEM_TRAIN].size) {
  		struct psp_memory_training_context *ctx =
  					&adev->psp.mem_train_ctx;
-@@ -2273,6 +2295,16 @@ int amdgpu_ttm_init(struct amdgpu_device *adev)
+@@ -2276,6 +2298,16 @@ int amdgpu_ttm_init(struct amdgpu_device *adev)
  		dev_err(adev->dev, "Failed initializing oa heap.\n");
  		return r;
  	}
@@ -12523,7 +12523,7 @@ index 3838e464703c..6b3fbf79abc9 100644
  	if (amdgpu_bo_create_kernel(adev, PAGE_SIZE, PAGE_SIZE,
  				AMDGPU_GEM_DOMAIN_GTT,
  				&adev->mman.sdma_access_bo, NULL,
-@@ -2326,6 +2358,7 @@ void amdgpu_ttm_fini(struct amdgpu_device *adev)
+@@ -2329,6 +2361,7 @@ void amdgpu_ttm_fini(struct amdgpu_device *adev)
  	ttm_range_man_fini(&adev->mman.bdev, AMDGPU_PL_OA);
  	ttm_range_man_fini(&adev->mman.bdev, AMDGPU_PL_DOORBELL);
  	ttm_range_man_fini(&adev->mman.bdev, AMDGPU_PL_MMIO_REMAP);
@@ -12531,7 +12531,7 @@ index 3838e464703c..6b3fbf79abc9 100644
  	ttm_device_fini(&adev->mman.bdev);
  	adev->mman.initialized = false;
  	dev_info(adev->dev, " ttm finalized\n");
-@@ -2659,7 +2692,7 @@ int amdgpu_ttm_clear_buffer(struct amdgpu_ttm_buffer_entity *entity,
+@@ -2662,7 +2695,7 @@ int amdgpu_ttm_clear_buffer(struct amdgpu_ttm_buffer_entity *entity,
  		cur_size = min(dst.size, 256ULL << 20);
  
  		r = amdgpu_ttm_map_buffer(entity, &bo->tbo, bo->tbo.resource, &dst,
@@ -12540,7 +12540,7 @@ index 3838e464703c..6b3fbf79abc9 100644
  		if (r)
  			goto error;
  
-@@ -2714,6 +2747,7 @@ int amdgpu_ttm_evict_resources(struct amdgpu_device *adev, int mem_type)
+@@ -2717,6 +2750,7 @@ int amdgpu_ttm_evict_resources(struct amdgpu_device *adev, int mem_type)
  	case AMDGPU_PL_GWS:
  	case AMDGPU_PL_GDS:
  	case AMDGPU_PL_OA:
@@ -19818,7 +19818,7 @@ index b2a3db60d231..9e6d8681b073 100644
  	unsigned long err_addr_cnt;
  };
 diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_userq.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_userq.c
-index 9316423f9340..e29823ae8672 100644
+index b3dc5dd49a64..4dca1ab48410 100644
 --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_userq.c
 +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_userq.c
 @@ -241,7 +241,6 @@ int amdgpu_userq_input_va_validate(struct amdgpu_device *adev,
@@ -19892,7 +19892,7 @@ index 9316423f9340..e29823ae8672 100644
  		r = -EINVAL;
  		goto err_pm_runtime;
  	}
-@@ -1036,7 +1054,11 @@ amdgpu_userq_vm_validate_and_restore_queue(struct amdgpu_userq_mgr *uq_mgr)
+@@ -1038,7 +1056,11 @@ amdgpu_userq_vm_validate_and_restore_queue(struct amdgpu_userq_mgr *uq_mgr)
  retry_lock:
  	drm_exec_init(&exec, DRM_EXEC_IGNORE_DUPLICATES, 0);
  	drm_exec_until_all_locked(&exec) {
@@ -19905,7 +19905,7 @@ index 9316423f9340..e29823ae8672 100644
  		drm_exec_retry_on_contention(&exec);
  		if (unlikely(ret))
  			goto unlock_all;
-@@ -1382,15 +1404,11 @@ void amdgpu_userq_mgr_fini(struct amdgpu_userq_mgr *userq_mgr)
+@@ -1384,15 +1406,11 @@ void amdgpu_userq_mgr_fini(struct amdgpu_userq_mgr *userq_mgr)
  
  int amdgpu_userq_suspend(struct amdgpu_device *adev)
  {
@@ -19921,7 +19921,7 @@ index 9316423f9340..e29823ae8672 100644
  	xa_for_each(&adev->userq_doorbell_xa, queue_id, queue) {
  		uqm = queue->userq_mgr;
  		cancel_delayed_work_sync(&uqm->resume_work);
-@@ -1407,15 +1425,11 @@ int amdgpu_userq_suspend(struct amdgpu_device *adev)
+@@ -1409,15 +1427,11 @@ int amdgpu_userq_suspend(struct amdgpu_device *adev)
  
  int amdgpu_userq_resume(struct amdgpu_device *adev)
  {
@@ -34513,7 +34513,7 @@ index c7253b908351..6b64cf83ee5c 100644
  	.soft_reset = sdma_v2_4_soft_reset,
  	.set_clockgating_state = sdma_v2_4_set_clockgating_state,
 diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v3_0.c b/drivers/gpu/drm/amd/amdgpu/sdma_v3_0.c
-index 05cce4bde73e..6f7243370acb 100644
+index c390767c9088..81f804c9d092 100644
 --- a/drivers/gpu/drm/amd/amdgpu/sdma_v3_0.c
 +++ b/drivers/gpu/drm/amd/amdgpu/sdma_v3_0.c
 @@ -28,6 +28,7 @@
@@ -34546,7 +34546,7 @@ index 05cce4bde73e..6f7243370acb 100644
  }
  
  /**
-@@ -526,18 +527,6 @@ static void sdma_v3_0_gfx_stop(struct amdgpu_device *adev)
+@@ -537,18 +538,6 @@ static void sdma_v3_0_gfx_stop(struct amdgpu_device *adev)
  	}
  }
  
@@ -34565,7 +34565,7 @@ index 05cce4bde73e..6f7243370acb 100644
  /**
   * sdma_v3_0_ctx_switch_enable - stop the async dma engines context switch
   *
-@@ -614,7 +603,6 @@ static void sdma_v3_0_enable(struct amdgpu_device *adev, bool enable)
+@@ -625,7 +614,6 @@ static void sdma_v3_0_enable(struct amdgpu_device *adev, bool enable)
  
  	if (!enable) {
  		sdma_v3_0_gfx_stop(adev);
@@ -34573,7 +34573,7 @@ index 05cce4bde73e..6f7243370acb 100644
  	}
  
  	for (i = 0; i < adev->sdma.num_instances; i++) {
-@@ -752,20 +740,6 @@ static int sdma_v3_0_gfx_resume(struct amdgpu_device *adev)
+@@ -763,20 +751,6 @@ static int sdma_v3_0_gfx_resume(struct amdgpu_device *adev)
  	return 0;
  }
  
@@ -34594,7 +34594,7 @@ index 05cce4bde73e..6f7243370acb 100644
  /**
   * sdma_v3_0_start - setup and start the async dma engines
   *
-@@ -784,9 +758,6 @@ static int sdma_v3_0_start(struct amdgpu_device *adev)
+@@ -795,9 +769,6 @@ static int sdma_v3_0_start(struct amdgpu_device *adev)
  
  	/* start the gfx rings and rlc compute queues */
  	r = sdma_v3_0_gfx_resume(adev);
@@ -34604,7 +34604,7 @@ index 05cce4bde73e..6f7243370acb 100644
  	if (r)
  		return r;
  
-@@ -858,7 +829,8 @@ static int sdma_v3_0_ring_test_ring(struct amdgpu_ring *ring)
+@@ -869,7 +840,8 @@ static int sdma_v3_0_ring_test_ring(struct amdgpu_ring *ring)
  static int sdma_v3_0_ring_test_ib(struct amdgpu_ring *ring, long timeout)
  {
  	struct amdgpu_device *adev = ring->adev;
@@ -34614,7 +34614,7 @@ index 05cce4bde73e..6f7243370acb 100644
  	struct dma_fence *f = NULL;
  	unsigned index;
  	u32 tmp = 0;
-@@ -872,26 +844,31 @@ static int sdma_v3_0_ring_test_ib(struct amdgpu_ring *ring, long timeout)
+@@ -883,26 +855,31 @@ static int sdma_v3_0_ring_test_ib(struct amdgpu_ring *ring, long timeout)
  	gpu_addr = adev->wb.gpu_addr + (index * 4);
  	tmp = 0xCAFEDEAD;
  	adev->wb.wb[index] = cpu_to_le32(tmp);
@@ -34661,7 +34661,7 @@ index 05cce4bde73e..6f7243370acb 100644
  
  	r = dma_fence_wait_timeout(f, false, timeout);
  	if (r == 0) {
-@@ -906,7 +883,6 @@ static int sdma_v3_0_ring_test_ib(struct amdgpu_ring *ring, long timeout)
+@@ -917,7 +894,6 @@ static int sdma_v3_0_ring_test_ib(struct amdgpu_ring *ring, long timeout)
  	else
  		r = -EINVAL;
  err1:
@@ -34669,7 +34669,7 @@ index 05cce4bde73e..6f7243370acb 100644
  	dma_fence_put(f);
  err0:
  	amdgpu_wb_free(adev, index);
-@@ -1007,12 +983,13 @@ static void sdma_v3_0_vm_set_pte_pde(struct amdgpu_ib *ib, uint64_t pe,
+@@ -1018,12 +994,13 @@ static void sdma_v3_0_vm_set_pte_pde(struct amdgpu_ib *ib, uint64_t pe,
  static void sdma_v3_0_ring_pad_ib(struct amdgpu_ring *ring, struct amdgpu_ib *ib)
  {
  	struct amdgpu_sdma_instance *sdma = amdgpu_sdma_get_instance_from_ring(ring);
@@ -34684,7 +34684,7 @@ index 05cce4bde73e..6f7243370acb 100644
  			ib->ptr[ib->length_dw++] =
  				SDMA_PKT_HEADER_OP(SDMA_OP_NOP) |
  				SDMA_PKT_NOP_HEADER_COUNT(pad_count - 1);
-@@ -1141,7 +1118,6 @@ static int sdma_v3_0_sw_init(struct amdgpu_ip_block *ip_block)
+@@ -1158,7 +1135,6 @@ static int sdma_v3_0_sw_init(struct amdgpu_ip_block *ip_block)
  
  	for (i = 0; i < adev->sdma.num_instances; i++) {
  		ring = &adev->sdma.instance[i].ring;
@@ -34692,7 +34692,7 @@ index 05cce4bde73e..6f7243370acb 100644
  		if (!amdgpu_sriov_vf(adev)) {
  			ring->use_doorbell = true;
  			ring->doorbell_index = adev->doorbell_index.sdma_engine[i];
-@@ -1149,11 +1125,7 @@ static int sdma_v3_0_sw_init(struct amdgpu_ip_block *ip_block)
+@@ -1166,11 +1142,7 @@ static int sdma_v3_0_sw_init(struct amdgpu_ip_block *ip_block)
  			ring->use_pollmem = true;
  		}
  
@@ -34705,7 +34705,7 @@ index 05cce4bde73e..6f7243370acb 100644
  		if (r)
  			return r;
  	}
-@@ -1209,18 +1181,6 @@ static int sdma_v3_0_resume(struct amdgpu_ip_block *ip_block)
+@@ -1226,18 +1198,6 @@ static int sdma_v3_0_resume(struct amdgpu_ip_block *ip_block)
  	return sdma_v3_0_hw_init(ip_block);
  }
  
@@ -34724,7 +34724,7 @@ index 05cce4bde73e..6f7243370acb 100644
  static int sdma_v3_0_wait_for_idle(struct amdgpu_ip_block *ip_block)
  {
  	unsigned i;
-@@ -1241,13 +1201,11 @@ static int sdma_v3_0_wait_for_idle(struct amdgpu_ip_block *ip_block)
+@@ -1258,13 +1218,11 @@ static int sdma_v3_0_wait_for_idle(struct amdgpu_ip_block *ip_block)
  static int sdma_v3_0_soft_reset(struct amdgpu_ip_block *ip_block)
  {
  	struct amdgpu_device *adev = ip_block->adev;
@@ -34741,7 +34741,7 @@ index 05cce4bde73e..6f7243370acb 100644
  
  	if (srbm_soft_reset) {
  		tmp = RREG32(mmSRBM_SOFT_RESET);
-@@ -1492,7 +1450,6 @@ static const struct amd_ip_funcs sdma_v3_0_ip_funcs = {
+@@ -1509,7 +1467,6 @@ static const struct amd_ip_funcs sdma_v3_0_ip_funcs = {
  	.hw_fini = sdma_v3_0_hw_fini,
  	.suspend = sdma_v3_0_suspend,
  	.resume = sdma_v3_0_resume,
@@ -38264,7 +38264,7 @@ index 000000000000..d794b0e3e800
 +
 +#endif
 diff --git a/drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c b/drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c
-index efb3fde919ee..b72a0c34425a 100644
+index b7d451f439a7..ff7128a11cad 100644
 --- a/drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c
 +++ b/drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c
 @@ -789,13 +789,6 @@ static int uvd_v3_1_resume(struct amdgpu_ip_block *ip_block)
@@ -95395,7 +95395,7 @@ index 22ad6a743038..5875d3847c29 100644
  
  	if (is_local_sink_detect_success && link->local_sink) {
 diff --git a/drivers/gpu/drm/amd/display/dc/link/link_dpms.c b/drivers/gpu/drm/amd/display/dc/link/link_dpms.c
-index 48b086d15ab0..0d3b65d40807 100644
+index 25ec3d38a14e..2aeb9a0e6e80 100644
 --- a/drivers/gpu/drm/amd/display/dc/link/link_dpms.c
 +++ b/drivers/gpu/drm/amd/display/dc/link/link_dpms.c
 @@ -767,14 +767,25 @@ void link_set_dsc_on_stream(struct pipe_ctx *pipe_ctx, bool enable)
@@ -331173,7 +331173,7 @@ index 6ee4bd77d433..356d7bb7f46a 100644
  
  	ret = drmm_mutex_init(dev, &vc4->purgeable.lock);
 diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index 17c8635c5afa..3a90dbb61f4e 100644
+index d4672aa81d85..2cc46036f11d 100644
 --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
 +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
 @@ -375,7 +375,7 @@ static void vc4_hdmi_handle_hotplug(struct vc4_hdmi *vc4_hdmi,
@@ -331584,7 +331584,7 @@ index a1a875a0c706..b60aab07e78d 100644
  	encoder->possible_crtcs = 1 << index;
  
 diff --git a/drivers/gpu/drm/virtio/virtgpu_plane.c b/drivers/gpu/drm/virtio/virtgpu_plane.c
-index b422eba42a5f..10718bc73693 100644
+index 640815af4098..62955acd1f8e 100644
 --- a/drivers/gpu/drm/virtio/virtgpu_plane.c
 +++ b/drivers/gpu/drm/virtio/virtgpu_plane.c
 @@ -31,6 +31,7 @@
@@ -334676,7 +334676,7 @@ index 000000000000..5d97afa76915
 +
 +#endif
 diff --git a/drivers/gpu/drm/xe/xe_bo.c b/drivers/gpu/drm/xe/xe_bo.c
-index 7b95ce0445a9..5a70e652895b 100644
+index 1813c8ab0500..6e970646cf8e 100644
 --- a/drivers/gpu/drm/xe/xe_bo.c
 +++ b/drivers/gpu/drm/xe/xe_bo.c
 @@ -28,6 +28,7 @@
@@ -334722,7 +334722,7 @@ index 7b95ce0445a9..5a70e652895b 100644
  {
  	return bo->flags & XE_BO_FLAG_USER;
  }
-@@ -1015,7 +1025,7 @@ void xe_bo_set_purgeable_state(struct xe_bo *bo,
+@@ -1024,7 +1034,7 @@ void xe_bo_set_purgeable_state(struct xe_bo *bo,
   *
   * Return: 0 on success, negative error code on failure
   */
@@ -334731,7 +334731,7 @@ index 7b95ce0445a9..5a70e652895b 100644
  {
  	struct xe_bo *bo = ttm_to_xe_bo(ttm_bo);
  	struct ttm_placement place = {};
-@@ -1023,9 +1033,6 @@ static int xe_ttm_bo_purge(struct ttm_buffer_object *ttm_bo, struct ttm_operatio
+@@ -1032,9 +1042,6 @@ static int xe_ttm_bo_purge(struct ttm_buffer_object *ttm_bo, struct ttm_operatio
  
  	xe_bo_assert_held(bo);
  
@@ -334741,7 +334741,7 @@ index 7b95ce0445a9..5a70e652895b 100644
  	if (!xe_bo_madv_is_dontneed(bo))
  		return 0;
  
-@@ -3344,6 +3351,9 @@ void xe_bo_unpin(struct xe_bo *bo)
+@@ -3353,6 +3360,9 @@ void xe_bo_unpin(struct xe_bo *bo)
  	struct ttm_place *place = &bo->placements[0];
  	struct xe_device *xe = xe_bo_device(bo);
  
@@ -334751,7 +334751,7 @@ index 7b95ce0445a9..5a70e652895b 100644
  	xe_assert(xe, !bo->ttm.base.import_attach);
  	xe_assert(xe, xe_bo_is_pinned(bo));
  
-@@ -3733,6 +3743,39 @@ int xe_gem_create_ioctl(struct drm_device *dev, void *data,
+@@ -3742,6 +3752,39 @@ int xe_gem_create_ioctl(struct drm_device *dev, void *data,
  	return err;
  }
  
@@ -334791,7 +334791,7 @@ index 7b95ce0445a9..5a70e652895b 100644
  int xe_gem_mmap_offset_ioctl(struct drm_device *dev, void *data,
  			     struct drm_file *file)
  {
-@@ -3748,21 +3791,8 @@ int xe_gem_mmap_offset_ioctl(struct drm_device *dev, void *data,
+@@ -3757,21 +3800,8 @@ int xe_gem_mmap_offset_ioctl(struct drm_device *dev, void *data,
  			 ~DRM_XE_MMAP_OFFSET_FLAG_PCI_BARRIER))
  		return -EINVAL;
  
@@ -339727,10 +339727,10 @@ index 1ea67eaeae24..51a1a431ad85 100644
  	[11] = { .name = "OptionROM", },
  	[12] = { .name = "DAM", },
 diff --git a/drivers/gpu/drm/xe/xe_oa.c b/drivers/gpu/drm/xe/xe_oa.c
-index ab09dcff5860..a3484e943c55 100644
+index 64f01d9988a7..3bb8bbef4c37 100644
 --- a/drivers/gpu/drm/xe/xe_oa.c
 +++ b/drivers/gpu/drm/xe/xe_oa.c
-@@ -2583,10 +2583,11 @@ static u32 __hwe_oam_unit(struct xe_hw_engine *hwe)
+@@ -2590,10 +2590,11 @@ static u32 __hwe_oam_unit(struct xe_hw_engine *hwe)
  		return XE_OA_UNIT_INVALID;
  	else if (!IS_DGFX(gt_to_xe(hwe->gt)))
  		return XE_OAM_UNIT_SCMI_0;
@@ -344327,7 +344327,7 @@ index 8b2d461ea0b2..9c1dac0fce6f 100644
  				    &uvma->userptr.notifier,
  				    xe_vma_userptr(vma),
 diff --git a/drivers/gpu/drm/xe/xe_vm.c b/drivers/gpu/drm/xe/xe_vm.c
-index ef20e205a734..390da884c727 100644
+index 99e42bd29e79..519b983d27f9 100644
 --- a/drivers/gpu/drm/xe/xe_vm.c
 +++ b/drivers/gpu/drm/xe/xe_vm.c
 @@ -29,6 +29,7 @@
@@ -344338,7 +344338,7 @@ index ef20e205a734..390da884c727 100644
  #include "xe_pat.h"
  #include "xe_pm.h"
  #include "xe_preempt_fence.h"
-@@ -615,10 +616,13 @@ void xe_vm_add_fault_entry_pf(struct xe_vm *vm, struct xe_pagefault *pf)
+@@ -640,10 +641,13 @@ void xe_vm_add_fault_entry_pf(struct xe_vm *vm, struct xe_pagefault *pf)
  {
  	struct xe_vm_fault_entry *e;
  	struct xe_hw_engine *hwe;
@@ -344354,7 +344354,7 @@ index ef20e205a734..390da884c727 100644
  	if (!hwe || xe_hw_engine_is_reserved(hwe))
  		return;
  
-@@ -640,7 +644,7 @@ void xe_vm_add_fault_entry_pf(struct xe_vm *vm, struct xe_pagefault *pf)
+@@ -665,7 +669,7 @@ void xe_vm_add_fault_entry_pf(struct xe_vm *vm, struct xe_pagefault *pf)
  		return;
  	}
  
@@ -344363,7 +344363,7 @@ index ef20e205a734..390da884c727 100644
  	/*
  	 * TODO:
  	 * Address precision is currently always SZ_4K, but this may change
-@@ -652,6 +656,7 @@ void xe_vm_add_fault_entry_pf(struct xe_vm *vm, struct xe_pagefault *pf)
+@@ -677,6 +681,7 @@ void xe_vm_add_fault_entry_pf(struct xe_vm *vm, struct xe_pagefault *pf)
  				  pf->consumer.fault_type_level);
  	e->fault_level = FIELD_GET(XE_PAGEFAULT_LEVEL_MASK,
  				   pf->consumer.fault_type_level);
@@ -344371,7 +344371,7 @@ index ef20e205a734..390da884c727 100644
  
  	list_add_tail(&e->list, &vm->faults.list);
  	vm->faults.len++;
-@@ -689,6 +694,17 @@ static int xe_vma_ops_alloc(struct xe_vma_ops *vops, bool array_of_binds)
+@@ -714,6 +719,17 @@ static int xe_vma_ops_alloc(struct xe_vma_ops *vops, bool array_of_binds)
  }
  ALLOW_ERROR_INJECTION(xe_vma_ops_alloc, ERRNO);
  
@@ -344389,7 +344389,7 @@ index ef20e205a734..390da884c727 100644
  static void xe_vma_svm_prefetch_op_fini(struct xe_vma_op *op)
  {
  	struct xe_vma *vma;
-@@ -696,7 +712,7 @@ static void xe_vma_svm_prefetch_op_fini(struct xe_vma_op *op)
+@@ -721,7 +737,7 @@ static void xe_vma_svm_prefetch_op_fini(struct xe_vma_op *op)
  	vma = gpuva_to_vma(op->base.prefetch.va);
  
  	if (op->base.op == DRM_GPUVA_OP_PREFETCH && xe_vma_is_cpu_addr_mirror(vma))
@@ -344398,7 +344398,7 @@ index ef20e205a734..390da884c727 100644
  }
  
  static void xe_vma_svm_prefetch_ops_fini(struct xe_vma_ops *vops)
-@@ -930,6 +946,7 @@ struct dma_fence *xe_vm_range_rebind(struct xe_vm *vm,
+@@ -955,6 +971,7 @@ struct dma_fence *xe_vm_range_rebind(struct xe_vm *vm,
  	u8 id;
  	int err;
  
@@ -344406,7 +344406,7 @@ index ef20e205a734..390da884c727 100644
  	lockdep_assert_held(&vm->lock);
  	xe_vm_assert_held(vm);
  	xe_assert(vm->xe, xe_vm_in_fault_mode(vm));
-@@ -1012,6 +1029,7 @@ struct dma_fence *xe_vm_range_unbind(struct xe_vm *vm,
+@@ -1037,6 +1054,7 @@ struct dma_fence *xe_vm_range_unbind(struct xe_vm *vm,
  	u8 id;
  	int err;
  
@@ -344414,7 +344414,7 @@ index ef20e205a734..390da884c727 100644
  	lockdep_assert_held(&vm->lock);
  	xe_vm_assert_held(vm);
  	xe_assert(vm->xe, xe_vm_in_fault_mode(vm));
-@@ -1187,6 +1205,8 @@ static struct xe_vma *xe_vma_create(struct xe_vm *vm,
+@@ -1212,6 +1230,8 @@ static struct xe_vma *xe_vma_create(struct xe_vm *vm,
  		xe_vm_get(vm);
  	}
  
@@ -344423,7 +344423,7 @@ index ef20e205a734..390da884c727 100644
  	return vma;
  }
  
-@@ -1211,6 +1231,7 @@ static void xe_vma_destroy_late(struct xe_vma *vma)
+@@ -1236,6 +1256,7 @@ static void xe_vma_destroy_late(struct xe_vma *vma)
  		xe_bo_put(bo);
  	}
  
@@ -344431,7 +344431,7 @@ index ef20e205a734..390da884c727 100644
  	xe_vma_free(vma);
  }
  
-@@ -1231,12 +1252,19 @@ static void vma_destroy_cb(struct dma_fence *fence,
+@@ -1256,12 +1277,19 @@ static void vma_destroy_cb(struct dma_fence *fence,
  	queue_work(system_dfl_wq, &vma->destroy_work);
  }
  
@@ -344452,7 +344452,7 @@ index ef20e205a734..390da884c727 100644
  	xe_assert(vm->xe, list_empty(&vma->combined_links.destroy));
  
  	if (xe_vma_is_userptr(vma)) {
-@@ -1320,7 +1348,9 @@ xe_vm_find_overlapping_vma(struct xe_vm *vm, u64 start, u64 range)
+@@ -1345,7 +1373,9 @@ xe_vm_find_overlapping_vma(struct xe_vm *vm, u64 start, u64 range)
  
  	xe_assert(vm->xe, start + range <= vm->size);
  
@@ -344462,7 +344462,7 @@ index ef20e205a734..390da884c727 100644
  
  	return gpuva ? gpuva_to_vma(gpuva) : NULL;
  }
-@@ -1330,7 +1360,7 @@ static int xe_vm_insert_vma(struct xe_vm *vm, struct xe_vma *vma)
+@@ -1355,7 +1385,7 @@ static int xe_vm_insert_vma(struct xe_vm *vm, struct xe_vma *vma)
  	int err;
  
  	xe_assert(vm->xe, xe_vma_vm(vma) == vm);
@@ -344471,7 +344471,7 @@ index ef20e205a734..390da884c727 100644
  
  	mutex_lock(&vm->snap_mutex);
  	err = drm_gpuva_insert(&vm->gpuvm, &vma->gpuva);
-@@ -1343,13 +1373,11 @@ static int xe_vm_insert_vma(struct xe_vm *vm, struct xe_vma *vma)
+@@ -1368,13 +1398,11 @@ static int xe_vm_insert_vma(struct xe_vm *vm, struct xe_vma *vma)
  static void xe_vm_remove_vma(struct xe_vm *vm, struct xe_vma *vma)
  {
  	xe_assert(vm->xe, xe_vma_vm(vma) == vm);
@@ -344486,7 +344486,7 @@ index ef20e205a734..390da884c727 100644
  }
  
  static struct drm_gpuva_op *xe_vm_op_alloc(void)
-@@ -1849,6 +1877,8 @@ static void xe_vm_close(struct xe_vm *vm)
+@@ -1874,6 +1902,8 @@ static void xe_vm_close(struct xe_vm *vm)
  	bound = drm_dev_enter(&xe->drm, &idx);
  
  	down_write(&vm->lock);
@@ -344495,7 +344495,7 @@ index ef20e205a734..390da884c727 100644
  	if (xe_vm_in_fault_mode(vm))
  		xe_svm_notifier_lock(vm);
  
-@@ -1876,6 +1906,8 @@ static void xe_vm_close(struct xe_vm *vm)
+@@ -1901,6 +1931,8 @@ static void xe_vm_close(struct xe_vm *vm)
  
  	if (xe_vm_in_fault_mode(vm))
  		xe_svm_notifier_unlock(vm);
@@ -344504,7 +344504,7 @@ index ef20e205a734..390da884c727 100644
  	up_write(&vm->lock);
  
  	if (bound)
-@@ -2182,7 +2214,7 @@ static int xe_vm_query_vmas(struct xe_vm *vm, u64 start, u64 end)
+@@ -2207,7 +2239,7 @@ static int xe_vm_query_vmas(struct xe_vm *vm, u64 start, u64 end)
  	struct drm_gpuva *gpuva;
  	u32 num_vmas = 0;
  
@@ -344513,7 +344513,7 @@ index ef20e205a734..390da884c727 100644
  	drm_gpuvm_for_each_va_range(gpuva, &vm->gpuvm, start, end)
  		num_vmas++;
  
-@@ -2195,7 +2227,7 @@ static int get_mem_attrs(struct xe_vm *vm, u32 *num_vmas, u64 start,
+@@ -2220,7 +2252,7 @@ static int get_mem_attrs(struct xe_vm *vm, u32 *num_vmas, u64 start,
  	struct drm_gpuva *gpuva;
  	int i = 0;
  
@@ -344522,7 +344522,7 @@ index ef20e205a734..390da884c727 100644
  
  	drm_gpuvm_for_each_va_range(gpuva, &vm->gpuvm, start, end) {
  		struct xe_vma *vma = gpuva_to_vma(gpuva);
-@@ -2241,7 +2273,7 @@ int xe_vm_query_vmas_attrs_ioctl(struct drm_device *dev, void *data, struct drm_
+@@ -2266,7 +2298,7 @@ int xe_vm_query_vmas_attrs_ioctl(struct drm_device *dev, void *data, struct drm_
  	if (XE_IOCTL_DBG(xe, !vm))
  		return -EINVAL;
  
@@ -344531,7 +344531,7 @@ index ef20e205a734..390da884c727 100644
  	if (err)
  		goto put_vm;
  
-@@ -2275,21 +2307,12 @@ int xe_vm_query_vmas_attrs_ioctl(struct drm_device *dev, void *data, struct drm_
+@@ -2300,21 +2332,12 @@ int xe_vm_query_vmas_attrs_ioctl(struct drm_device *dev, void *data, struct drm_
  free_mem_attrs:
  	kvfree(mem_attrs);
  unlock_vm:
@@ -344554,7 +344554,7 @@ index ef20e205a734..390da884c727 100644
  /**
   * xe_vm_find_vma_by_addr() - Find a VMA by its address
   *
-@@ -2298,16 +2321,7 @@ static bool vma_matches(struct xe_vma *vma, u64 page_addr)
+@@ -2323,16 +2346,7 @@ static bool vma_matches(struct xe_vma *vma, u64 page_addr)
   */
  struct xe_vma *xe_vm_find_vma_by_addr(struct xe_vm *vm, u64 page_addr)
  {
@@ -344572,7 +344572,7 @@ index ef20e205a734..390da884c727 100644
  }
  
  static const u32 region_to_mem_type[] = {
-@@ -2420,7 +2434,7 @@ vm_bind_ioctl_ops_create(struct xe_vm *vm, struct xe_vma_ops *vops,
+@@ -2445,7 +2459,7 @@ vm_bind_ioctl_ops_create(struct xe_vm *vm, struct xe_vma_ops *vops,
  	u64 range_end = addr + range;
  	int err;
  
@@ -344581,7 +344581,7 @@ index ef20e205a734..390da884c727 100644
  
  	vm_dbg(&vm->xe->drm,
  	       "op=%d, addr=0x%016llx, range=0x%016llx, bo_offset_or_userptr=0x%016llx",
-@@ -2443,10 +2457,12 @@ vm_bind_ioctl_ops_create(struct xe_vm *vm, struct xe_vma_ops *vops,
+@@ -2468,10 +2482,12 @@ vm_bind_ioctl_ops_create(struct xe_vm *vm, struct xe_vma_ops *vops,
  			.map.gem.offset = bo_offset_or_userptr,
  		};
  
@@ -344594,7 +344594,7 @@ index ef20e205a734..390da884c727 100644
  		ops = drm_gpuvm_sm_unmap_ops_create(&vm->gpuvm, addr, range);
  		break;
  	case DRM_XE_VM_BIND_OP_PREFETCH:
-@@ -2455,6 +2471,7 @@ vm_bind_ioctl_ops_create(struct xe_vm *vm, struct xe_vma_ops *vops,
+@@ -2480,6 +2496,7 @@ vm_bind_ioctl_ops_create(struct xe_vm *vm, struct xe_vma_ops *vops,
  	case DRM_XE_VM_BIND_OP_UNMAP_ALL:
  		xe_assert(vm->xe, bo);
  
@@ -344602,7 +344602,7 @@ index ef20e205a734..390da884c727 100644
  		err = xe_bo_lock(bo, true);
  		if (err)
  			return ERR_PTR(err);
-@@ -2476,6 +2493,16 @@ vm_bind_ioctl_ops_create(struct xe_vm *vm, struct xe_vma_ops *vops,
+@@ -2501,6 +2518,16 @@ vm_bind_ioctl_ops_create(struct xe_vm *vm, struct xe_vma_ops *vops,
  	if (IS_ERR(ops))
  		return ops;
  
@@ -344619,7 +344619,7 @@ index ef20e205a734..390da884c727 100644
  	drm_gpuva_for_each_op(__op, ops) {
  		struct xe_vma_op *op = gpuva_op_to_vma_op(__op);
  
-@@ -2504,10 +2531,14 @@ vm_bind_ioctl_ops_create(struct xe_vm *vm, struct xe_vma_ops *vops,
+@@ -2529,10 +2556,14 @@ vm_bind_ioctl_ops_create(struct xe_vm *vm, struct xe_vma_ops *vops,
  			struct drm_pagemap *dpagemap = NULL;
  			u8 id, tile_mask = 0;
  			u32 i;
@@ -344635,7 +344635,7 @@ index ef20e205a734..390da884c727 100644
  			}
  
  			ctx.read_only = xe_vma_read_only(vma);
-@@ -2517,9 +2548,6 @@ vm_bind_ioctl_ops_create(struct xe_vm *vm, struct xe_vma_ops *vops,
+@@ -2542,9 +2573,6 @@ vm_bind_ioctl_ops_create(struct xe_vm *vm, struct xe_vma_ops *vops,
  			for_each_tile(tile, vm->xe, id)
  				tile_mask |= 0x1 << id;
  
@@ -344645,7 +344645,7 @@ index ef20e205a734..390da884c727 100644
  			if (prefetch_region == DRM_XE_CONSULT_MEM_ADVISE_PREF_LOC) {
  				dpagemap = xe_vma_resolve_pagemap(vma,
  								  xe_device_get_root_tile(vm->xe));
-@@ -2531,6 +2559,7 @@ vm_bind_ioctl_ops_create(struct xe_vm *vm, struct xe_vma_ops *vops,
+@@ -2556,6 +2584,7 @@ vm_bind_ioctl_ops_create(struct xe_vm *vm, struct xe_vma_ops *vops,
  
  			op->prefetch_range.dpagemap = dpagemap;
  alloc_next_range:
@@ -344653,7 +344653,7 @@ index ef20e205a734..390da884c727 100644
  			svm_range = xe_svm_range_find_or_insert(vm, addr, vma, &ctx);
  
  			if (PTR_ERR(svm_range) == -ENOENT) {
-@@ -2548,8 +2577,11 @@ vm_bind_ioctl_ops_create(struct xe_vm *vm, struct xe_vma_ops *vops,
+@@ -2573,8 +2602,11 @@ vm_bind_ioctl_ops_create(struct xe_vm *vm, struct xe_vma_ops *vops,
  				goto unwind_prefetch_ops;
  			}
  
@@ -344666,7 +344666,7 @@ index ef20e205a734..390da884c727 100644
  				goto check_next_range;
  			}
  
-@@ -2557,18 +2589,27 @@ vm_bind_ioctl_ops_create(struct xe_vm *vm, struct xe_vma_ops *vops,
+@@ -2582,18 +2614,27 @@ vm_bind_ioctl_ops_create(struct xe_vm *vm, struct xe_vma_ops *vops,
  				       &i, svm_range, xa_limit_32b,
  				       GFP_KERNEL);
  
@@ -344695,7 +344695,7 @@ index ef20e205a734..390da884c727 100644
  		}
  print_op_label:
  		print_op(vm->xe, __op);
-@@ -2593,7 +2634,7 @@ static struct xe_vma *new_vma(struct xe_vm *vm, struct drm_gpuva_op_map *op,
+@@ -2618,7 +2659,7 @@ static struct xe_vma *new_vma(struct xe_vm *vm, struct drm_gpuva_op_map *op,
  	struct xe_vma *vma;
  	int err = 0;
  
@@ -344704,7 +344704,7 @@ index ef20e205a734..390da884c727 100644
  
  	if (bo) {
  		err = 0;
-@@ -2690,10 +2731,12 @@ static int xe_vma_op_commit(struct xe_vm *vm, struct xe_vma_op *op)
+@@ -2715,10 +2756,12 @@ static int xe_vma_op_commit(struct xe_vm *vm, struct xe_vma_op *op)
  {
  	int err = 0;
  
@@ -344718,7 +344718,7 @@ index ef20e205a734..390da884c727 100644
  		err |= xe_vm_insert_vma(vm, op->map.vma);
  		if (!err)
  			op->flags |= XE_VMA_OP_COMMITTED;
-@@ -2703,6 +2746,8 @@ static int xe_vma_op_commit(struct xe_vm *vm, struct xe_vma_op *op)
+@@ -2728,6 +2771,8 @@ static int xe_vma_op_commit(struct xe_vm *vm, struct xe_vma_op *op)
  		u8 tile_present =
  			gpuva_to_vma(op->base.remap.unmap->va)->tile_present;
  
@@ -344727,7 +344727,7 @@ index ef20e205a734..390da884c727 100644
  		prep_vma_destroy(vm, gpuva_to_vma(op->base.remap.unmap->va),
  				 true);
  		op->flags |= XE_VMA_OP_COMMITTED;
-@@ -2737,6 +2782,8 @@ static int xe_vma_op_commit(struct xe_vm *vm, struct xe_vma_op *op)
+@@ -2762,6 +2807,8 @@ static int xe_vma_op_commit(struct xe_vm *vm, struct xe_vma_op *op)
  		break;
  	}
  	case DRM_GPUVA_OP_UNMAP:
@@ -344736,7 +344736,7 @@ index ef20e205a734..390da884c727 100644
  		prep_vma_destroy(vm, gpuva_to_vma(op->base.unmap.va), true);
  		op->flags |= XE_VMA_OP_COMMITTED;
  		break;
-@@ -2782,7 +2829,7 @@ static int vm_bind_ioctl_ops_parse(struct xe_vm *vm, struct drm_gpuva_ops *ops,
+@@ -2807,7 +2854,7 @@ static int vm_bind_ioctl_ops_parse(struct xe_vm *vm, struct drm_gpuva_ops *ops,
  	u8 id, tile_mask = 0;
  	int err = 0;
  
@@ -344745,7 +344745,7 @@ index ef20e205a734..390da884c727 100644
  
  	for_each_tile(tile, vm->xe, id)
  		tile_mask |= 0x1 << id;
-@@ -2961,10 +3008,12 @@ static void xe_vma_op_unwind(struct xe_vm *vm, struct xe_vma_op *op,
+@@ -2986,10 +3033,12 @@ static void xe_vma_op_unwind(struct xe_vm *vm, struct xe_vma_op *op,
  			     bool post_commit, bool prev_post_commit,
  			     bool next_post_commit)
  {
@@ -344759,7 +344759,7 @@ index ef20e205a734..390da884c727 100644
  		if (op->map.vma) {
  			prep_vma_destroy(vm, op->map.vma, post_commit);
  			xe_vma_destroy_unlocked(op->map.vma);
-@@ -2974,6 +3023,8 @@ static void xe_vma_op_unwind(struct xe_vm *vm, struct xe_vma_op *op,
+@@ -2999,6 +3048,8 @@ static void xe_vma_op_unwind(struct xe_vm *vm, struct xe_vma_op *op,
  	{
  		struct xe_vma *vma = gpuva_to_vma(op->base.unmap.va);
  
@@ -344768,7 +344768,7 @@ index ef20e205a734..390da884c727 100644
  		if (vma) {
  			xe_svm_notifier_lock(vm);
  			vma->gpuva.flags &= ~XE_VMA_DESTROYED;
-@@ -2987,6 +3038,8 @@ static void xe_vma_op_unwind(struct xe_vm *vm, struct xe_vma_op *op,
+@@ -3012,6 +3063,8 @@ static void xe_vma_op_unwind(struct xe_vm *vm, struct xe_vma_op *op,
  	{
  		struct xe_vma *vma = gpuva_to_vma(op->base.remap.unmap->va);
  
@@ -344777,7 +344777,7 @@ index ef20e205a734..390da884c727 100644
  		if (op->remap.prev) {
  			prep_vma_destroy(vm, op->remap.prev, prev_post_commit);
  			xe_vma_destroy_unlocked(op->remap.prev);
-@@ -3115,16 +3168,87 @@ static int check_ufence(struct xe_vma *vma)
+@@ -3140,16 +3193,87 @@ static int check_ufence(struct xe_vma *vma)
  	return 0;
  }
  
@@ -344868,7 +344868,7 @@ index ef20e205a734..390da884c727 100644
  
  	if (!xe_vma_is_cpu_addr_mirror(vma))
  		return 0;
-@@ -3134,37 +3258,50 @@ static int prefetch_ranges(struct xe_vm *vm, struct xe_vma_op *op)
+@@ -3159,37 +3283,50 @@ static int prefetch_ranges(struct xe_vm *vm, struct xe_vma_op *op)
  	ctx.check_pages_threshold = devmem_possible ? SZ_64K : 0;
  	ctx.device_private_page_owner = xe_svm_private_page_owner(vm, !dpagemap);
  
@@ -344944,7 +344944,7 @@ index ef20e205a734..390da884c727 100644
  	}
  
  	return err;
-@@ -3295,7 +3432,8 @@ static int op_lock_and_prep(struct drm_exec *exec, struct xe_vm *vm,
+@@ -3320,7 +3457,8 @@ static int op_lock_and_prep(struct drm_exec *exec, struct xe_vm *vm,
  	return err;
  }
  
@@ -344954,7 +344954,7 @@ index ef20e205a734..390da884c727 100644
  {
  	struct xe_vma_op *op;
  	int err;
-@@ -3305,7 +3443,7 @@ static int vm_bind_ioctl_ops_prefetch_ranges(struct xe_vm *vm, struct xe_vma_ops
+@@ -3330,7 +3468,7 @@ static int vm_bind_ioctl_ops_prefetch_ranges(struct xe_vm *vm, struct xe_vma_ops
  
  	list_for_each_entry(op, &vops->list, link) {
  		if (op->base.op  == DRM_GPUVA_OP_PREFETCH) {
@@ -344963,7 +344963,7 @@ index ef20e205a734..390da884c727 100644
  			if (err)
  				return err;
  		}
-@@ -3566,7 +3704,7 @@ static struct dma_fence *vm_bind_ioctl_ops_execute(struct xe_vm *vm,
+@@ -3591,7 +3729,7 @@ static struct dma_fence *vm_bind_ioctl_ops_execute(struct xe_vm *vm,
  	struct dma_fence *fence;
  	int err = 0;
  
@@ -344972,7 +344972,7 @@ index ef20e205a734..390da884c727 100644
  
  	xe_validation_guard(&ctx, &vm->xe->val, &exec,
  			    ((struct xe_val_flags) {
-@@ -3889,7 +4027,7 @@ int xe_vm_bind_ioctl(struct drm_device *dev, void *data, struct drm_file *file)
+@@ -3914,7 +4052,7 @@ int xe_vm_bind_ioctl(struct drm_device *dev, void *data, struct drm_file *file)
  	u32 num_syncs, num_ufence = 0;
  	struct xe_sync_entry *syncs = NULL;
  	struct drm_xe_vm_bind_op *bind_ops = NULL;
@@ -344981,7 +344981,7 @@ index ef20e205a734..390da884c727 100644
  	struct dma_fence *fence;
  	int err;
  	int i;
-@@ -4064,6 +4202,11 @@ int xe_vm_bind_ioctl(struct drm_device *dev, void *data, struct drm_file *file)
+@@ -4089,6 +4227,11 @@ int xe_vm_bind_ioctl(struct drm_device *dev, void *data, struct drm_file *file)
  		goto unwind_ops;
  	}
  
@@ -344993,7 +344993,7 @@ index ef20e205a734..390da884c727 100644
  	err = xe_vma_ops_alloc(&vops, args->num_binds > 1);
  	if (err)
  		goto unwind_ops;
-@@ -4100,7 +4243,10 @@ int xe_vm_bind_ioctl(struct drm_device *dev, void *data, struct drm_file *file)
+@@ -4125,7 +4268,10 @@ int xe_vm_bind_ioctl(struct drm_device *dev, void *data, struct drm_file *file)
  free_bos:
  	kvfree(bos);
  release_vm_lock:
@@ -345005,7 +345005,7 @@ index ef20e205a734..390da884c727 100644
  put_exec_queue:
  	if (q)
  		xe_exec_queue_put(q);
-@@ -4134,6 +4280,11 @@ static u8 xe_to_user_fault_level(u8 fault_level)
+@@ -4159,6 +4305,11 @@ static u8 xe_to_user_fault_level(u8 fault_level)
  	return fault_level;
  }
  
@@ -345017,7 +345017,7 @@ index ef20e205a734..390da884c727 100644
  static int fill_faults(struct xe_vm *vm,
  		       struct drm_xe_vm_get_property *args)
  {
-@@ -4161,6 +4312,8 @@ static int fill_faults(struct xe_vm *vm,
+@@ -4186,6 +4337,8 @@ static int fill_faults(struct xe_vm *vm,
  		fault_entry.fault_type = xe_to_user_fault_type(entry->fault_type);
  		fault_entry.fault_level = xe_to_user_fault_level(entry->fault_level);
  
@@ -345026,7 +345026,7 @@ index ef20e205a734..390da884c727 100644
  		memcpy(&fault_list[i], &fault_entry, entry_size);
  
  		i++;
-@@ -4732,7 +4885,7 @@ static int xe_vm_alloc_vma(struct xe_vm *vm,
+@@ -4757,7 +4910,7 @@ static int xe_vm_alloc_vma(struct xe_vm *vm,
  	u16 default_pat;
  	int err;
  
@@ -345035,7 +345035,7 @@ index ef20e205a734..390da884c727 100644
  
  	if (is_madvise)
  		ops = drm_gpuvm_madvise_ops_create(&vm->gpuvm, map_req);
-@@ -4866,7 +5019,7 @@ int xe_vm_alloc_madvise_vma(struct xe_vm *vm, uint64_t start, uint64_t range)
+@@ -4891,7 +5044,7 @@ int xe_vm_alloc_madvise_vma(struct xe_vm *vm, uint64_t start, uint64_t range)
  		.map.va.range = range,
  	};
  
@@ -345044,7 +345044,7 @@ index ef20e205a734..390da884c727 100644
  
  	vm_dbg(&vm->xe->drm, "MADVISE_OPS_CREATE: addr=0x%016llx, size=0x%016llx", start, range);
  
-@@ -4898,7 +5051,7 @@ void xe_vm_find_cpu_addr_mirror_vma_range(struct xe_vm *vm, u64 *start, u64 *end
+@@ -4923,7 +5076,7 @@ void xe_vm_find_cpu_addr_mirror_vma_range(struct xe_vm *vm, u64 *start, u64 *end
  {
  	struct xe_vma *prev, *next;
  
@@ -345053,7 +345053,7 @@ index ef20e205a734..390da884c727 100644
  
  	if (*start >= SZ_4K) {
  		prev = xe_vm_find_vma_by_addr(vm, *start - SZ_4K);
-@@ -4930,7 +5083,7 @@ int xe_vm_alloc_cpu_addr_mirror_vma(struct xe_vm *vm, uint64_t start, uint64_t r
+@@ -4955,7 +5108,7 @@ int xe_vm_alloc_cpu_addr_mirror_vma(struct xe_vm *vm, uint64_t start, uint64_t r
  		.map.va.range = range,
  	};
  
@@ -345062,7 +345062,7 @@ index ef20e205a734..390da884c727 100644
  
  	vm_dbg(&vm->xe->drm, "CPU_ADDR_MIRROR_VMA_OPS_CREATE: addr=0x%016llx, size=0x%016llx",
  	       start, range);
-@@ -4952,7 +5105,6 @@ void xe_vm_add_exec_queue(struct xe_vm *vm, struct xe_exec_queue *q)
+@@ -4977,7 +5130,6 @@ void xe_vm_add_exec_queue(struct xe_vm *vm, struct xe_exec_queue *q)
  
  	/* User VMs and queues only */
  	xe_assert(xe, !(q->flags & EXEC_QUEUE_FLAG_KERNEL));
