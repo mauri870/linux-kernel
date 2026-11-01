@@ -1,7 +1,7 @@
 # Maintainer: Mauri de Souza Meneguzzo <mauri870@gmail.com>
 
 pkgbase=linux-mauri870
-pkgver=7.3.0
+pkgver=7.4.0
 pkgrel=1
 pkgdesc="Mauri870's custom Linux kernel with added patches and optimizations"
 url="https://www.kernel.org"
@@ -81,7 +81,7 @@ b2sums=(
   'SKIP'
 )
 
-export LINUX_COMMIT=c03c1a14507dfaf8b856c2608f9ac216021fc222
+export LINUX_COMMIT=cbbddb6b08cc9900a87cccaa9b22bbe06aa4f50a
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
