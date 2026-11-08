@@ -176,10 +176,10 @@ index 000000000000..7300b8c33507
 +}
 +#endif
 diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 9f167950926a..35248fa7033e 100644
+index 6af3b7008f1a..2474b2c54caf 100644
 --- a/include/linux/mm.h
 +++ b/include/linux/mm.h
-@@ -3607,36 +3607,36 @@ static inline bool get_user_page_fast_only(unsigned long addr,
+@@ -3611,36 +3611,36 @@ static inline bool get_user_page_fast_only(unsigned long addr,
   */
  static inline unsigned long get_mm_counter(struct mm_struct *mm, int member)
  {
@@ -296,10 +296,10 @@ index caf444762a27..2cfe57ac6651 100644
  	if (!folio_mapped(folio) && folio_test_swapcache(folio) &&
  	     folio_trylock(folio)) {
 diff --git a/kernel/fork.c b/kernel/fork.c
-index 8b108ed37152..d86a4174e270 100644
+index 3bcaaecf7ebe..68da5c987b8e 100644
 --- a/kernel/fork.c
 +++ b/kernel/fork.c
-@@ -633,7 +633,7 @@ static void check_mm(struct mm_struct *mm)
+@@ -637,7 +637,7 @@ static void check_mm(struct mm_struct *mm)
  			 "Please make sure 'struct resident_page_types[]' is updated as well");
  
  	for (i = 0; i < NR_MM_COUNTERS; i++) {
@@ -308,7 +308,7 @@ index 8b108ed37152..d86a4174e270 100644
  
  		if (unlikely(x)) {
  			pr_alert("BUG: Bad rss-counter state mm:%p type:%s val:%ld Comm:%s Pid:%d\n",
-@@ -738,7 +738,7 @@ void __mmdrop(struct mm_struct *mm)
+@@ -742,7 +742,7 @@ void __mmdrop(struct mm_struct *mm)
  	check_mm(mm);
  	mm_pasid_drop(mm);
  	mm_destroy_cid(mm);
@@ -317,7 +317,7 @@ index 8b108ed37152..d86a4174e270 100644
  
  	free_mm(mm);
  }
-@@ -1143,15 +1143,10 @@ static struct mm_struct *mm_init(struct mm_struct *mm, struct task_struct *p)
+@@ -1147,15 +1147,10 @@ static struct mm_struct *mm_init(struct mm_struct *mm, struct task_struct *p)
  	if (mm_alloc_sched(mm))
  		goto fail_sched;
  
@@ -334,7 +334,7 @@ index 8b108ed37152..d86a4174e270 100644
  fail_sched:
  	mm_destroy_cid(mm);
  fail_cid:
-@@ -1588,6 +1583,9 @@ static int copy_mm(u64 clone_flags, struct task_struct *tsk)
+@@ -1600,6 +1595,9 @@ static int copy_mm(u64 clone_flags, struct task_struct *tsk)
  		return 0;
  
  	if (clone_flags & CLONE_VM) {
@@ -454,7 +454,7 @@ index 87b261b87b0b..34648bea5fdd 100644
  {
  	int ret;
 diff --git a/mm/filemap.c b/mm/filemap.c
-index b74bc1e5015c..c74c9effa2cb 100644
+index b04be64a5069..cdcbf2fe14ff 100644
 --- a/mm/filemap.c
 +++ b/mm/filemap.c
 @@ -4011,7 +4011,7 @@ vm_fault_t filemap_map_pages(struct vm_fault *vmf,
@@ -467,7 +467,7 @@ index b74bc1e5015c..c74c9effa2cb 100644
  	trace_mm_filemap_map_pages(mapping, start_pgoff, end_pgoff);
  out:
 diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index bd44d58e8684..854ac645d4e5 100644
+index eb913acb03b7..4e3792396dd3 100644
 --- a/mm/huge_memory.c
 +++ b/mm/huge_memory.c
 @@ -1410,7 +1410,7 @@ static void map_anon_folio_pmd_pf(struct folio *folio, pmd_t *pmd,
@@ -515,8 +515,17 @@ index bd44d58e8684..854ac645d4e5 100644
  out_zero_page:
  	mm_inc_nr_ptes(dst_mm);
  	pgtable_trans_huge_deposit(dst_mm, dst_pmd, pgtable);
-@@ -2489,9 +2489,9 @@ static void zap_huge_pmd_folio(struct mm_struct *mm, struct vm_area_struct *vma,
- 		folio_remove_rmap_pmd(folio, &folio->page, vma);
+@@ -2101,7 +2101,7 @@ int copy_huge_pud(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma
+ 		 * folio_try_dup_anon_rmap_*() and split if duplicating fails.
+ 		 */
+ 		folio_add_file_rmap_pud(folio, page, dst_vma);
+-		add_mm_counter(dst_mm, mm_counter_file(folio), HPAGE_PUD_NR);
++		add_mm_counter_local(dst_mm, mm_counter_file(folio), HPAGE_PUD_NR);
+ 	}
+ 
+ 	if (vma_is_cow_mapping(src_vma) && pud_write(pud)) {
+@@ -2496,9 +2496,9 @@ static void zap_huge_pmd_folio(struct mm_struct *mm, struct vm_area_struct *vma,
+ 	const bool is_device_private = pmd_is_device_private_entry(pmdval);
  
  	if (folio_test_anon(folio)) {
 -		add_mm_counter(mm, MM_ANONPAGES, -HPAGE_PMD_NR);
@@ -527,7 +536,7 @@ index bd44d58e8684..854ac645d4e5 100644
  			       -HPAGE_PMD_NR);
  
  		if (is_present && pmd_dirty(pmdval))
-@@ -3061,7 +3061,7 @@ int zap_huge_pud(struct mmu_gather *tlb, struct vm_area_struct *vma,
+@@ -3072,7 +3072,7 @@ int zap_huge_pud(struct mmu_gather *tlb, struct vm_area_struct *vma,
  		page = pud_page(orig_pud);
  		folio = page_folio(page);
  		folio_remove_rmap_pud(folio, page, vma);
@@ -536,7 +545,7 @@ index bd44d58e8684..854ac645d4e5 100644
  
  		spin_unlock(ptl);
  		tlb_remove_page_size(tlb, page, HPAGE_PUD_SIZE);
-@@ -3096,7 +3096,7 @@ static void __split_huge_pud_locked(struct vm_area_struct *vma, pud_t *pud,
+@@ -3107,7 +3107,7 @@ static void __split_huge_pud_locked(struct vm_area_struct *vma, pud_t *pud,
  	if (!folio_test_referenced(folio) && pud_young(old_pud))
  		folio_set_referenced(folio);
  	folio_remove_rmap_pud(folio, page, vma);
@@ -545,7 +554,7 @@ index bd44d58e8684..854ac645d4e5 100644
  		-HPAGE_PUD_NR);
  	folio_put(folio);
  }
-@@ -3219,11 +3219,11 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
+@@ -3230,11 +3230,11 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
  			if (!folio_test_referenced(folio) && pmd_young(old_pmd))
  				folio_set_referenced(folio);
  			folio_remove_rmap_pmd(folio, page, vma);
@@ -559,7 +568,7 @@ index bd44d58e8684..854ac645d4e5 100644
  		return;
  	}
  
-@@ -3611,7 +3611,7 @@ static bool __discard_anon_folio_pmd_locked(struct vm_area_struct *vma,
+@@ -3672,7 +3672,7 @@ static bool __discard_anon_folio_pmd_locked(struct vm_area_struct *vma,
  
  	folio_remove_rmap_pmd(folio, pmd_page(orig_pmd), vma);
  	zap_deposited_table(mm, pmdp);
@@ -569,7 +578,7 @@ index bd44d58e8684..854ac645d4e5 100644
  		mlock_drain_local();
  	folio_put(folio);
 diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 4b71d010b2af..61453fc883b0 100644
+index 4bbe319ef86f..0cd855a43706 100644
 --- a/mm/khugepaged.c
 +++ b/mm/khugepaged.c
 @@ -766,7 +766,7 @@ static void __collapse_huge_page_copy_succeeded(pte_t *pte,
@@ -581,7 +590,7 @@ index 4b71d010b2af..61453fc883b0 100644
  			if (pte_none(pteval))
  				continue;
  			/*
-@@ -2007,7 +2007,7 @@ static enum scan_result try_collapse_pte_mapped_thp(struct mm_struct *mm, unsign
+@@ -2009,7 +2009,7 @@ static enum scan_result try_collapse_pte_mapped_thp(struct mm_struct *mm, unsign
  	/* step 3: set proper refcount and mm_counters. */
  	if (nr_mapped_ptes) {
  		folio_ref_sub(folio, nr_mapped_ptes);
@@ -590,7 +599,7 @@ index 4b71d010b2af..61453fc883b0 100644
  	}
  
  	/* step 4: remove empty page table */
-@@ -2043,7 +2043,7 @@ static enum scan_result try_collapse_pte_mapped_thp(struct mm_struct *mm, unsign
+@@ -2044,7 +2044,7 @@ static enum scan_result try_collapse_pte_mapped_thp(struct mm_struct *mm, unsign
  	if (nr_mapped_ptes) {
  		flush_tlb_mm(mm);
  		folio_ref_sub(folio, nr_mapped_ptes);
@@ -600,10 +609,10 @@ index 4b71d010b2af..61453fc883b0 100644
  unlock:
  	if (start_pte)
 diff --git a/mm/ksm.c b/mm/ksm.c
-index dbfb8f98b189..1a6dd9365850 100644
+index d24b129932bf..af3aa86ddcc0 100644
 --- a/mm/ksm.c
 +++ b/mm/ksm.c
-@@ -1460,7 +1460,7 @@ static int replace_page(struct vm_area_struct *vma, struct page *page,
+@@ -1462,7 +1462,7 @@ static int replace_page(struct vm_area_struct *vma, struct page *page,
  		 * will get wrong values in /proc, and a BUG message in dmesg
  		 * when tearing down the mm.
  		 */
@@ -611,12 +620,12 @@ index dbfb8f98b189..1a6dd9365850 100644
 +		dec_mm_counter_other(mm, MM_ANONPAGES);
  	}
  
- 	flush_cache_page(vma, addr, pte_pfn(ptep_get(ptep)));
+ 	/* Preserve soft-dirty and uffd protection when replacing the page. */
 diff --git a/mm/madvise.c b/mm/madvise.c
-index 75b409e97dbf..598a01e59708 100644
+index 0214efd2a014..f00d2c79c57f 100644
 --- a/mm/madvise.c
 +++ b/mm/madvise.c
-@@ -784,7 +784,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
+@@ -793,7 +793,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
  	}
  
  	if (nr_swap)
@@ -626,7 +635,7 @@ index 75b409e97dbf..598a01e59708 100644
  		lazy_mmu_mode_disable();
  		pte_unmap_unlock(start_pte, ptl);
 diff --git a/mm/memory.c b/mm/memory.c
-index 0fb676dd2bd6..e3b9ecea5daa 100644
+index ec3d9d99ccee..587130997fed 100644
 --- a/mm/memory.c
 +++ b/mm/memory.c
 @@ -489,7 +489,7 @@ static inline void add_mm_rss_vec(struct mm_struct *mm, int *rss)
@@ -638,7 +647,7 @@ index 0fb676dd2bd6..e3b9ecea5daa 100644
  }
  
  /* Allow a burst of 60 bad page map reports per minute. */
-@@ -2477,7 +2477,7 @@ static int insert_page_into_pte_locked(struct vm_area_struct *vma, pte_t *pte,
+@@ -2480,7 +2480,7 @@ static int insert_page_into_pte_locked(struct vm_area_struct *vma, pte_t *pte,
  			pteval = pte_mkyoung(pteval);
  			pteval = maybe_mkwrite(pte_mkdirty(pteval), vma);
  		}
@@ -647,7 +656,7 @@ index 0fb676dd2bd6..e3b9ecea5daa 100644
  		folio_add_file_rmap_pte(folio, page, vma);
  	}
  	set_pte_at(vma->vm_mm, addr, pte, pteval);
-@@ -4107,12 +4107,12 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
+@@ -4119,12 +4119,12 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
  	if (likely(vmf->pte && pte_same(ptep_get(vmf->pte), vmf->orig_pte))) {
  		if (old_folio) {
  			if (!folio_test_anon(old_folio)) {
@@ -663,7 +672,7 @@ index 0fb676dd2bd6..e3b9ecea5daa 100644
  		}
  		flush_cache_page(vma, vmf->address, pte_pfn(vmf->orig_pte));
  		entry = folio_mk_pte(new_folio, vma->vm_page_prot);
-@@ -5227,8 +5227,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+@@ -5269,8 +5269,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
  	 */
  	arch_swap_restore(folio_swap(entry, folio), folio);
  
@@ -674,7 +683,7 @@ index 0fb676dd2bd6..e3b9ecea5daa 100644
  	pte = mk_pte(page, vma->vm_page_prot);
  	if (pte_swp_soft_dirty(vmf->orig_pte))
  		pte = pte_mksoft_dirty(pte);
-@@ -5483,7 +5483,7 @@ static void map_anon_folio_pte_pf(struct folio *folio, pte_t *pte,
+@@ -5526,7 +5526,7 @@ static void map_anon_folio_pte_pf(struct folio *folio, pte_t *pte,
  	const unsigned int order = folio_order(folio);
  
  	map_anon_folio_pte_nopf(folio, pte, vma, addr, uffd_wp);
@@ -683,7 +692,7 @@ index 0fb676dd2bd6..e3b9ecea5daa 100644
  	count_mthp_stat(order, MTHP_STAT_ANON_FAULT_ALLOC);
  }
  
-@@ -5729,7 +5729,7 @@ vm_fault_t do_set_pmd(struct vm_fault *vmf, struct folio *folio, struct page *pa
+@@ -5772,7 +5772,7 @@ vm_fault_t do_set_pmd(struct vm_fault *vmf, struct folio *folio, struct page *pa
  	if (write)
  		entry = maybe_pmd_mkwrite(pmd_mkdirty(entry), vma);
  
@@ -692,7 +701,7 @@ index 0fb676dd2bd6..e3b9ecea5daa 100644
  	folio_add_file_rmap_pmd(folio, page, vma);
  
  	/*
-@@ -5932,7 +5932,7 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
+@@ -5975,7 +5975,7 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
  	folio_ref_add(folio, nr_pages - 1);
  	set_pte_range(vmf, folio, page, nr_pages, addr);
  	type = is_cow ? MM_ANONPAGES : mm_counter_file(folio);
@@ -702,7 +711,7 @@ index 0fb676dd2bd6..e3b9ecea5daa 100644
  
  unlock:
 diff --git a/mm/migrate.c b/mm/migrate.c
-index 7bdcdb57652f..12f2e405a7c9 100644
+index 875079464930..0832fcee6b0c 100644
 --- a/mm/migrate.c
 +++ b/mm/migrate.c
 @@ -336,7 +336,7 @@ static bool try_to_map_unused_to_zeropage(struct page_vma_mapped_walk *pvmw,
@@ -737,10 +746,10 @@ index 9e19fadfa65c..4adfe32d7d9e 100644
  	if (!folio_is_zone_device(folio))
  		folio_add_lru_vma(folio, vma);
 diff --git a/mm/rmap.c b/mm/rmap.c
-index 1131b76bbbc2..7b8af1685d98 100644
+index 0faef46806e5..8c53d2933665 100644
 --- a/mm/rmap.c
 +++ b/mm/rmap.c
-@@ -2113,7 +2113,7 @@ static bool ttu_anon_lazyfree_folio(struct vm_area_struct *vma,
+@@ -2128,7 +2128,7 @@ static bool ttu_anon_lazyfree_folio(struct vm_area_struct *vma,
  	if (ref_count != 1 + map_count)
  		return false;
  
@@ -749,7 +758,7 @@ index 1131b76bbbc2..7b8af1685d98 100644
  	return true;
  }
  
-@@ -2170,8 +2170,8 @@ static bool ttu_anon_swapbacked_folio(struct vm_area_struct *vma,
+@@ -2185,8 +2185,8 @@ static bool ttu_anon_swapbacked_folio(struct vm_area_struct *vma,
  	}
  
  	mm_prepare_for_swap_entries(mm);
@@ -760,7 +769,7 @@ index 1131b76bbbc2..7b8af1685d98 100644
  	set_pte_at(mm, address, ptep,
  		   swp_pte_prepare(entry, pteval, anon_exclusive));
  	return true;
-@@ -2347,7 +2347,7 @@ static bool try_to_unmap_one(struct folio *folio, struct vm_area_struct *vma,
+@@ -2362,7 +2362,7 @@ static bool try_to_unmap_one(struct folio *folio, struct vm_area_struct *vma,
  		/* unmap_poisoned_folio() only refs order-0 folios */
  		if (folio_test_hwpoison(folio) && (flags & TTU_HWPOISON)) {
  			pteval = swp_entry_to_pte(make_hwpoison_entry(page));
@@ -769,7 +778,7 @@ index 1131b76bbbc2..7b8af1685d98 100644
  			set_pte_at(mm, address, pvmw.pte, pteval);
  		} else if (likely(pte_present(pteval)) && pte_unused(pteval) &&
  			   !userfaultfd_armed(vma)) {
-@@ -2361,7 +2361,7 @@ static bool try_to_unmap_one(struct folio *folio, struct vm_area_struct *vma,
+@@ -2376,7 +2376,7 @@ static bool try_to_unmap_one(struct folio *folio, struct vm_area_struct *vma,
  			 * migration) will not expect userfaults on already
  			 * copied pages.
  			 */
@@ -778,7 +787,7 @@ index 1131b76bbbc2..7b8af1685d98 100644
  		} else if (folio_test_anon(folio)) {
  			if (!ttu_anon_folio(vma, folio, page, address,
  					    pvmw.pte, pteval, nr_pages)) {
-@@ -2382,7 +2382,7 @@ static bool try_to_unmap_one(struct folio *folio, struct vm_area_struct *vma,
+@@ -2397,7 +2397,7 @@ static bool try_to_unmap_one(struct folio *folio, struct vm_area_struct *vma,
  			 *
  			 * See Documentation/mm/mmu_notifier.rst
  			 */
@@ -787,7 +796,7 @@ index 1131b76bbbc2..7b8af1685d98 100644
  		}
  finish_unmap:
  		folio_remove_rmap_ptes(folio, page, nr_pages, vma);
-@@ -2659,7 +2659,7 @@ static bool try_to_migrate_one(struct folio *folio, struct vm_area_struct *vma,
+@@ -2674,7 +2674,7 @@ static bool try_to_migrate_one(struct folio *folio, struct vm_area_struct *vma,
  				set_huge_pte_at(mm, address, pvmw.pte, pteval,
  						hsz);
  			} else {
@@ -796,7 +805,7 @@ index 1131b76bbbc2..7b8af1685d98 100644
  				set_pte_at(mm, address, pvmw.pte, pteval);
  			}
  		} else if (likely(pte_present(pteval)) && pte_unused(pteval) &&
-@@ -2674,7 +2674,7 @@ static bool try_to_migrate_one(struct folio *folio, struct vm_area_struct *vma,
+@@ -2689,7 +2689,7 @@ static bool try_to_migrate_one(struct folio *folio, struct vm_area_struct *vma,
  			 * migration) will not expect userfaults on already
  			 * copied pages.
  			 */
@@ -806,10 +815,10 @@ index 1131b76bbbc2..7b8af1685d98 100644
  			swp_entry_t entry;
  			pte_t swp_pte;
 diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 254ce86fa923..a0957ab2cfdb 100644
+index 2d2df53fc51a..080f44044b8b 100644
 --- a/mm/swapfile.c
 +++ b/mm/swapfile.c
-@@ -2538,7 +2538,7 @@ static int unuse_pte(struct vm_area_struct *vma, pmd_t *pmd,
+@@ -2539,7 +2539,7 @@ static int unuse_pte(struct vm_area_struct *vma, pmd_t *pmd,
  	if (unlikely(hwpoisoned || !folio_test_uptodate(folio))) {
  		swp_entry_t swp_entry;
  
@@ -818,7 +827,7 @@ index 254ce86fa923..a0957ab2cfdb 100644
  		if (hwpoisoned) {
  			swp_entry = make_hwpoison_entry(page);
  		} else {
-@@ -2556,8 +2556,8 @@ static int unuse_pte(struct vm_area_struct *vma, pmd_t *pmd,
+@@ -2557,8 +2557,8 @@ static int unuse_pte(struct vm_area_struct *vma, pmd_t *pmd,
  	 */
  	arch_swap_restore(folio_swap(entry, folio), folio);
  
@@ -830,7 +839,7 @@ index 254ce86fa923..a0957ab2cfdb 100644
  	if (folio == swapcache) {
  		rmap_t rmap_flags = RMAP_NONE;
 diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-index 928ad95eeb2b..868e67a6adcc 100644
+index 169f681f9849..c6104d97338e 100644
 --- a/mm/userfaultfd.c
 +++ b/mm/userfaultfd.c
 @@ -383,7 +383,7 @@ static int mfill_atomic_install_pte(pmd_t *dst_pmd,

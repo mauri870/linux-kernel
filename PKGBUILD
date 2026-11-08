@@ -37,7 +37,7 @@ _url="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git"
 source=(
   config
   0001-hdmi_frl.patch
-  #0002-bore.patch
+  0002-bore.patch
   0003-clang-polly.patch
   0004-mm_lazy_rss_stat.patch
   0005-cflags-O3.patch
@@ -59,7 +59,7 @@ source=(
 )
 b2sums=(
   'SKIP'
-  #'SKIP'
+  'SKIP'
   'SKIP'
   'SKIP'
   'SKIP'
@@ -81,7 +81,7 @@ b2sums=(
   'SKIP'
 )
 
-export LINUX_COMMIT=6628e7d4c6b25c8d18f1345e3a20d21829aae7e4
+export LINUX_COMMIT=fa4ad798f6f681031775266044ba1b0cf3c670bd
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
