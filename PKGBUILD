@@ -81,7 +81,7 @@ b2sums=(
   'SKIP'
 )
 
-export LINUX_COMMIT=aebb7274476403040d582c61478df8f4a7bf9cd3
+export LINUX_COMMIT=b6a9fa34ce4187cb69d3c588a4bbffc31ce5db8f
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
